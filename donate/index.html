@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>СайтСотика — Главная с донат-чатом</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #020617;
+      font-family: system-ui, sans-serif;
+      color: #e5e7eb;
+    }
+
+    /* скрытый label */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .stream-section {
+      display: grid;
+      grid-template-columns: max-content minmax(320px, 1fr);
+      gap: 12px;
+      height: 100vh;
+      padding: 10px;
+      background: #020617;
+      align-items: start;
+    }
+
+    .stream-left {
+      border: 1px solid rgba(148,163,184,0.4);
+      border-radius: 16px;
+      background: #0f172a;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      overflow: hidden;
+      width: max-content;
+    }
+
+    .player-16x9 {
+      position: relative;
+      width: 720px;
+      max-width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .player-16x9 iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .stream-right {
+      border: 1px solid rgba(148,163,184,0.4);
+      border-radius: 16px;
+      background: #0f172a;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .chatiksotika-header {
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .chatiksotika-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .chatiksotika-msg {
+      padding: 6px 9px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+
+    .chatiksotika-msg-donate {
+      background: rgba(250,204,21,0.12);
+      border-color: rgba(250,204,21,0.8);
+    }
+
+    .chatiksotika-name {
+      font-weight: 700;
+      color: #38bdf8;
+      margin-right: 4px;
+    }
+
+    .chatiksotika-donate-label {
+      font-weight: 700;
+      color: #facc15;
+      margin-right: 4px;
+    }
+
+    .chatiksotika-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      border-top: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.96);
+    }
+
+    #name-field {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+
+    .chatiksotika-top-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    #chatiksotika-input {
+      flex: 1;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+
+    #chatiksotika-send {
+      padding: 7px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(56,189,248,0.6);
+      background: rgba(56,189,248,0.15);
+      color: #38bdf8;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .chatiksotika-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .chatiksotika-donate-row {
+      display: none;
+      gap: 6px;
+    }
+
+    .chatiksotika-donate-row.active {
+      display: flex;
+    }
+
+    #chatiksotika-amount {
+      width: 90px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(250,204,21,0.7);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="stream-section">
+    <div class="stream-left">
+      <div class="player-16x9">
+        <iframe
+          src="https://player.twitch.tv/?channel=fsbsotik&parent=localhost&autoplay=false"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="stream-right">
+      <div class="chatiksotika-header">ЧатикСотика</div>
+
+      <div class="chatiksotika-window" id="chatiksotika-window"></div>
+
+      <div class="chatiksotika-input-row">
+
+        <!-- label для имени -->
+        <label for="name-field" class="visually-hidden">Введите имя или ник</label>
+        <input id="name-field" type="text" placeholder="Имя Фамилия или Ник" />
+
+        <div class="chatiksotika-top-row">
+          <label for="chatiksotika-input" class="visually-hidden">Введите сообщение</label>
+          <input id="chatiksotika-input" type="text" placeholder="Введите сообщение..." />
+          <button id="chatiksotika-send">Отправить</button>
+        </div>
+
+        <div class="chatiksotika-controls">
+          <label>
+            <input type="checkbox" id="chatiksotika-donate-toggle" />
+            Донат
+          </label>
+        </div>
+
+        <div class="chatiksotika-donate-row" id="chatiksotika-donate-row">
+          <label for="chatiksotika-amount" class="visually-hidden">Сумма доната</label>
+          <input id="chatiksotika-amount" type="number" min="1" step="1" placeholder="Сумма ₽" />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const chatWindow = document.getElementById("chatiksotika-window");
+    const chatInput = document.getElementById("chatiksotika-input");
+    const chatSend = document.getElementById("chatiksotika-send");
+    const donateToggle = document.getElementById("chatiksotika-donate-toggle");
+    const donateRow = document.getElementById("chatiksotika-donate-row");
+    const donateAmount = document.getElementById("chatiksotika-amount");
+    const nameField = document.getElementById("name-field");
+
+    let displayName = null;
+
+    function formatName(raw) {
+      const trimmed = raw.trim();
+
+      const nick = /^[A-Za-z0-9_-]+$/;
+      if (nick.test(trimmed)) return trimmed;
+
+      const parts = trimmed.split(/\s+/);
+      if (parts.length === 2) {
+        const [first, last] = parts;
+        const cyr = /^[А-Яа-яЁё-]+$/;
+        if (cyr.test(first) && cyr.test(last)) {
+          return first + " " + last[0].toUpperCase() + ".";
+        }
+      }
+
+      return null;
+    }
+
+    function loadName() {
+      const saved = localStorage.getItem("chatiksotika_name");
+      if (saved) {
+        displayName = saved;
+        nameField.style.display = "none";
+      }
+    }
+
+    function trySaveName() {
+      if (displayName) return true;
+
+      const raw = nameField.value;
+      const formatted = formatName(raw);
+      if (!formatted) return false;
+
+      displayName = formatted;
+      localStorage.setItem("chatiksotika_name", formatted);
+      nameField.style.display = "none";
+      return true;
+    }
+
+    function addMessage(text, isDonate = false, amount = null) {
+      const msg = document.createElement("div");
+      msg.className = "chatiksotika-msg" + (isDonate ? " chatiksotika-msg-donate" : "");
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "chatiksotika-name";
+      nameSpan.textContent = displayName + ":";
+
+      msg.appendChild(nameSpan);
+
+      if (isDonate && amount) {
+        const donateSpan = document.createElement("span");
+        donateSpan.className = "chatiksotika-donate-label";
+        donateSpan.textContent = `(донат ${amount}₽)`;
+        msg.appendChild(donateSpan);
+        msg.appendChild(document.createTextNode(" "));
+      }
+
+      msg.appendChild(document.createTextNode(text));
+      chatWindow.appendChild(msg);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    chatSend.addEventListener("click", () => {
+      if (!trySaveName()) return;
+
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      const isDonate = donateToggle.checked;
+
+      if (isDonate) {
+        const amountVal = parseInt(donateAmount.value, 10);
+        if (!amountVal) return;
+        addMessage(text, true, amountVal);
+        donateAmount.value = "";
+      } else {
+        addMessage(text);
+      }
+
+      chatInput.value = "";
+    });
+
+    donateToggle.addEventListener("change", () => {
+      donateRow.classList.toggle("active", donateToggle.checked);
+    });
+
+    loadName();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>СайтСотика — Хаб</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        /* ================== БАЗА ================== */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        html,
+        body {
+          height: 100%;
+        }
+
+        body {
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            sans-serif;
+          background: radial-gradient(circle at top, #020617 0, #000 60%);
+          color: #e5e7eb;
+        }
+
+        :root {
+          --bg: #020617;
+          --bg2: #02081a;
+          --border: rgba(148, 163, 184, 0.4);
+          --accent-blue: #38bdf8;
+          --accent-green: #22c55e;
+          --accent-gold: #fbbf24;
+          --text-main: #e5e7eb;
+          --text-soft: #9ca3af;
+          --radius-xl: 24px;
+          --radius-lg: 18px;
+          --radius-md: 12px;
+          --transition-med: 260ms ease-out;
+          --transition-slow: 3s ease;
+        }
+
+        /* ================== ОБОЛОЧКА ХАБА ================== */
+        .hub-shell {
+          position: relative;
+          z-index: 1;
+          min-height: 100vh;
+          padding: 20px 24px 24px;
+          display: flex;
+          flex-direction: column;
+          background: radial-gradient(circle at top, #020617 0, #020617 60%, #000);
+          transition: opacity 400ms ease, transform 400ms ease;
+        }
+
+        .hub-shell--hidden {
+          opacity: 0;
+          transform: translateY(40px);
+          pointer-events: none;
+          display: none;
+        }
+
+        .hub-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 18px;
+        }
+
+        .hub-brand {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .hub-logo {
+          width: 38px;
+          height: 38px;
+          border-radius: 999px;
+          background: conic-gradient(
+            from 210deg,
+            #38bdf8,
+            #22c55e,
+            #fbbf24,
+            #ec4899,
+            #38bdf8
+          );
+          padding: 2px;
+          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+        }
+
+        .hub-logo-inner {
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #e5e7eb;
+          font-weight: 800;
+          font-size: 18px;
+          letter-spacing: 0.08em;
+        }
+
+        .hub-brand-text-main {
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .hub-brand-text-sub {
+          font-size: 10px;
+          color: var(--text-soft);
+          text-transform: uppercase;
+          letter-spacing: 0.18em;
+        }
+
+        .hub-brand-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .hub-tag {
+          border-radius: 999px;
+          padding: 6px 10px;
+          border: 1px solid var(--border);
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: var(--text-soft);
+        }
+
+        .hub-center {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          min-height: 0;
+        }
+
+        .hub-title {
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .hub-subtitle {
+          margin-top: 4px;
+          font-size: 12px;
+          color: var(--text-soft);
+          max-width: 520px;
+        }
+
+        .hub-bottom {
+          margin-top: 16px;
+          font-size: 10px;
+          color: var(--text-soft);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .hub-bottom-pill {
+          border-radius: 999px;
+          padding: 3px 8px;
+          border: 1px solid var(--border);
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+        }
+
+        /* ================== ТРИ ОКНА ================== */
+        .hub-windows-row {
+          flex: 1;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 16px;
+          min-height: 0;
+          margin-top: 10px;
+        }
+
+        @media (max-width: 1024px) {
+          .hub-windows-row {
+            grid-template-columns: minmax(0, 1fr);
+          }
+        }
+
+        .hub-window {
+          position: relative;
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--border);
+          background: radial-gradient(
+              circle at top left,
+              rgba(56, 189, 248, 0.18),
+              transparent 55%
+            ),
+            #020617;
+          padding: 14px 14px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          cursor: pointer;
+          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+          transition: transform var(--transition-med),
+            box-shadow var(--transition-med), border-color var(--transition-med),
+            background var(--transition-med);
+        }
+
+        .hub-window--site {
+          border-color: rgba(56, 189, 248, 0.9);
+        }
+
+        .hub-window--donate {
+          border-color: rgba(34, 197, 94, 0.9);
+          background: radial-gradient(
+              circle at top left,
+              rgba(34, 197, 94, 0.18),
+              transparent 55%
+            ),
+            #020617;
+        }
+
+        .hub-window--auction {
+          border-color: rgba(251, 191, 36, 0.9);
+          background: radial-gradient(
+              circle at top left,
+              rgba(251, 191, 36, 0.18),
+              transparent 55%
+            ),
+            #020617;
+        }
+
+        .hub-window:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 32px 80px rgba(0, 0, 0, 0.95);
+        }
+
+        .hub-window-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .hub-window-label {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: var(--text-soft);
+        }
+
+        .hub-window-title {
+          margin-top: 2px;
+          font-size: 16px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+
+        .hub-window-title--blue {
+          color: var(--accent-blue);
+        }
+
+        .hub-window-title--green {
+          color: var(--accent-green);
+        }
+
+        .hub-window-title--gold {
+          color: var(--accent-gold);
+        }
+
+        .hub-window-badge {
+          border-radius: 999px;
+          padding: 4px 9px;
+          border: 1px solid var(--border);
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: var(--text-soft);
+        }
+
+        .hub-window-body {
+          margin-top: 8px;
+          border-radius: var(--radius-lg);
+          border: 1px solid rgba(31, 41, 55, 0.9);
+          background: #020617;
+          padding: 9px 10px 10px;
+          font-size: 12px;
+          color: var(--text-soft);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .hub-window-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 6px;
+        }
+
+        .hub-window-row-label {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: var(--text-soft);
+        }
+
+        .hub-window-row-value {
+          font-size: 12px;
+          color: var(--text-main);
+        }
+
+        .hub-window-footer {
+          margin-top: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 11px;
+          color: var(--text-soft);
+        }
+
+        .hub-window-arrow {
+          font-size: 18px;
+          transition: transform 160ms ease-out;
+        }
+
+        .hub-window:hover .hub-window-arrow {
+          transform: translateX(4px);
+        }
+
+        /* ================== САЙТСОТИКА — ПОЛНОЦЕННОЕ ОКНО ================== */
+        .sitesotik-app {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(40px) scale(0.96);
+          transition: opacity var(--transition-slow),
+            transform var(--transition-slow);
+          background: radial-gradient(circle at top, #020617 0, #000 60%);
+          z-index: 10;
+        }
+
+        /* Убедимся, что все окна используют одинаковый фон */
+        .sitesotik-app--active {
+          background: radial-gradient(circle at top, #020617 0, #000 60%);
+        }
+
+        .sitesotik-app--active {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0) scale(1);
+        }
+
+        /* ===== ХЭДЕР САЙТСОТИКА (НОВЫЙ) ===== */
+        .sitesotik-header {
+          padding: 14px 24px;
+          border-bottom: 1px solid var(--border);
+          background: rgba(2, 6, 23, 0.96);
+          backdrop-filter: blur(16px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          z-index: 5;
+        }
+
+        .sitesotik-back {
+          position: absolute;
+          left: 24px;
+          padding: 7px 14px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.96);
+          color: var(--text-main);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: background 200ms ease, border-color 200ms ease,
+            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
+        }
+
+        .sitesotik-back:hover {
+          background: rgba(56, 189, 248, 0.18);
+          border-color: var(--accent-blue);
+          color: var(--accent-blue);
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
+          transform: translateY(-1px);
+        }
+
+        .sitesotik-header-center {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          pointer-events: none;
+          margin-left: 110px;
+        }
+
+        .sitesotik-header-logo-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 999px;
+          background: conic-gradient(
+            from 210deg,
+            #38bdf8,
+            #22c55e,
+            #fbbf24,
+            #ec4899,
+            #38bdf8
+          );
+          padding: 2px;
+          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+        }
+
+        .sitesotik-header-logo-inner {
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #e5e7eb;
+          font-weight: 800;
+          font-size: 16px;
+          letter-spacing: 0.08em;
+        }
+
+        .sitesotik-header-title {
+          font-size: 20px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: none;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-nav {
+          position: absolute;
+          right: 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .sitesotik-nav-list {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .sitesotik-nav-btn {
+          padding: 7px 14px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.96);
+          color: var(--text-main);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: background 200ms ease, border-color 200ms ease,
+            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
+          white-space: nowrap;
+        }
+
+        .sitesotik-nav-btn:hover {
+          background: rgba(30, 64, 175, 0.9);
+          border-color: rgba(129, 140, 248, 0.9);
+          box-shadow: 0 0 16px rgba(129, 140, 248, 0.7);
+          transform: translateY(-1px);
+        }
+
+        .sitesotik-nav-btn--active {
+          background: rgba(56, 189, 248, 0.18);
+          border-color: var(--accent-blue);
+          color: var(--accent-blue);
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
+        }
+
+        .sitesotik-burger {
+          display: none;
+          width: 32px;
+          height: 32px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.96);
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 200ms ease, border-color 200ms ease,
+            transform 120ms ease;
+        }
+
+        .sitesotik-burger-lines {
+          width: 18px;
+          height: 12px;
+          position: relative;
+        }
+
+        .sitesotik-burger-line {
+          position: absolute;
+          left: 0;
+          right: 0;
+          height: 2px;
+          border-radius: 999px;
+          background: #e5e7eb;
+          transition: transform 200ms ease, opacity 200ms ease, top 200ms ease,
+            bottom 200ms ease;
+        }
+
+        .sitesotik-burger-line--1 {
+          top: 0;
+        }
+
+        .sitesotik-burger-line--2 {
+          top: 5px;
+        }
+
+        .sitesotik-burger-line--3 {
+          bottom: 0;
+        }
+
+        .sitesotik-burger--open .sitesotik-burger-line--1 {
+          top: 5px;
+          transform: rotate(45deg);
+        }
+
+        .sitesotik-burger--open .sitesotik-burger-line--2 {
+          opacity: 0;
+        }
+
+        .sitesotik-burger--open .sitesotik-burger-line--3 {
+          bottom: 5px;
+          transform: rotate(-45deg);
+        }
+
+        .sitesotik-burger:hover {
+          background: rgba(30, 64, 175, 0.9);
+          border-color: rgba(129, 140, 248, 0.9);
+          transform: translateY(-1px);
+        }
+
+        @media (max-width: 720px) {
+          .sitesotik-nav-list {
+            display: none;
+          }
+
+          .sitesotik-burger {
+            display: inline-flex;
+          }
+
+          .sitesotik-nav--mobile-open .sitesotik-nav-list {
+            display: flex;
+            position: absolute;
+            top: 46px;
+            right: 0;
+            flex-direction: column;
+            align-items: flex-end;
+            padding: 8px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.98);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+          }
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕНТ САЙТСОТИКА ===== */
+        .sitesotik-main {
+          flex: 1;
+          padding: 16px 24px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .sitesotik-frame {
+          flex: 1;
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--border);
+          background: #020617;
+          box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
+          padding: 18px 20px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .sitesotik-frame-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+          padding-bottom: 8px;
+        }
+
+        .sitesotik-frame-title {
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        .sitesotik-frame-sub {
+          font-size: 11px;
+          color: var(--text-soft);
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+        }
+
+        .sitesotik-frame-body {
+          flex: 1;
+          overflow-y: auto;
+          padding-right: 8px;
+          font-size: 14px;
+          color: var(--text-soft);
+        }
+
+        .sitesotik-page {
+          display: none;
+          animation: sitesotik-page-in 420ms ease-out forwards;
+        }
+
+        .sitesotik-page--active {
+          display: block;
+        }
+
+        @keyframes sitesotik-page-in {
+          0% {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .sitesotik-page h2 {
+          font-size: 20px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+          color: var(--text-main);
+        }
+
+        .sitesotik-page p {
+          margin-bottom: 8px;
+          line-height: 1.7;
+        }
+
+        .sitesotik-section {
+          margin-top: 14px;
+          padding-top: 10px;
+          border-top: 1px dashed rgba(55, 65, 81, 0.9);
+        }
+
+        .sitesotik-section-title {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: var(--text-soft);
+          margin-bottom: 6px;
+        }
+
+        .sitesotik-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 10px;
+        }
+
+        .sitesotik-card {
+          border-radius: var(--radius-md);
+          border: 1px solid rgba(31, 41, 55, 0.9);
+          background: #020617;
+          padding: 9px 10px;
+          font-size: 13px;
+        }
+
+        .sitesotik-card-title {
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 4px;
+          color: var(--text-main);
+        }
+
+        .sitesotik-badges {
+          margin-top: 6px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 5px;
+        }
+
+        .sitesotik-badge {
+          border-radius: 999px;
+          padding: 2px 7px;
+          border: 1px solid rgba(55, 65, 81, 0.9);
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          color: var(--text-soft);
+        }
+
+        @media (max-width: 768px) {
+          .hub-shell {
+            padding: 16px 14px 18px;
+          }
+
+          .sitesotik-main {
+            padding: 14px 14px 18px;
+          }
+
+          .sitesotik-frame {
+            padding: 16px 14px 18px;
+          }
+        }
+
+        @media (max-width: 540px) {
+          .hub-top {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+          }
+
+          .sitesotik-header {
+            padding: 12px 14px;
+          }
+
+          .sitesotik-back {
+            left: 14px;
+          }
+
+          .sitesotik-nav {
+            right: 14px;
+          }
+
+          .sitesotik-main {
+            padding: 12px 10px 14px;
+          }
+        }
+        .sitesotik-iframe {
+  width: 100%;
+  height: calc(100vh - 200px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: #020617; /* Изменен фон с черного на темно-синий (#020617) */
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
+}
+
+    </style>
+</head>
+<body>
+<!-- ХАБ С ТРЕМЯ ОКНАМИ -->
+<div class="hub-shell" id="hub-shell">
+    <header class="hub-top">
+        <div class="hub-brand">
+            <div class="hub-logo">
+                <div class="hub-logo-inner">S</div>
+            </div>
+            <div class="hub-brand-stack">
+                <div class="hub-brand-text-main">САЙТСОТИКА</div>
+                <div class="hub-brand-text-sub">ХАБ · ТРИ ОКНА</div>
+            </div>
+        </div>
+        <div class="hub-tag">главный экран</div>
+    </header>
+
+    <main class="hub-center">
+        <div>
+            <div class="hub-title">ТРИ ОКНА ОДНОГО ХАБА</div>
+            <div class="hub-subtitle">
+                СайтСотика, ДонатыСотика и АукционСотика — три входа в один файл.
+                Всё дальше будет жить внутри этого шаблона.
+            </div>
+        </div>
+
+        <section class="hub-windows-row">
+            <!-- ОКНО 1 — САЙТСОТИКА -->
+            <article class="hub-window hub-window--site" id="window-sitesotik">
+                <div class="hub-window-header">
+                    <div>
+                        <div class="hub-window-label">окно 1</div>
+                        <div class="hub-window-title hub-window-title--blue">
+                            САЙТСОТИКА
+                        </div>
+                    </div>
+                    <div class="hub-window-badge">основной сайт</div>
+                </div>
+                <div class="hub-window-body">
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">режим</div>
+                        <div class="hub-window-row-value">
+                            Главная · Обо мне · Игры · Команда · Партнеры
+                        </div>
+                    </div>
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">формат</div>
+                        <div class="hub-window-row-value">полноценное окно сайта</div>
+                    </div>
+                </div>
+                <div class="hub-window-footer">
+                    <span>нажми, чтобы открыть СайтСотику</span>
+                    <span class="hub-window-arrow">↗</span>
+                </div>
+            </article>
+
+            <!-- ОКНО 2 — ДОНАТЫСОТИКА -->
+            <article class="hub-window hub-window--donate" id="window-donate">
+                <div class="hub-window-header">
+                    <div>
+                        <div class="hub-window-label">окно 2</div>
+                        <div class="hub-window-title hub-window-title--green">
+                            ДОНАТЫСОТИКА
+                        </div>
+                    </div>
+                    <div class="hub-window-badge">донаты</div>
+                </div>
+                <div class="hub-window-body">
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">режим</div>
+                        <div class="hub-window-row-value">донатный центр</div>
+                    </div>
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">статус</div>
+                        <div class="hub-window-row-value">шаблон будет позже</div>
+                    </div>
+                </div>
+                <div class="hub-window-footer">
+                    <span>нажми, чтобы открыть донаты</span>
+                    <span class="hub-window-arrow">↗</span>
+                </div>
+            </article>
+
+            <!-- ОКНО 3 — АУКЦИОНСОТИКА (пока только окно) -->
+            <article class="hub-window hub-window--auction" id="window-auction">
+                <div class="hub-window-header">
+                    <div>
+                        <div class="hub-window-label">окно 3</div>
+                        <div class="hub-window-title hub-window-title--gold">
+                            АУКЦИОНСОТИКА
+                        </div>
+                    </div>
+                    <div class="hub-window-badge">аукцион</div>
+                </div>
+                <div class="hub-window-body">
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">режим</div>
+                        <div class="hub-window-row-value">аукционные лоты</div>
+                    </div>
+                    <div class="hub-window-row">
+                        <div class="hub-window-row-label">статус</div>
+                        <div class="hub-window-row-value">шаблон будет позже</div>
+                    </div>
+                </div>
+                <div class="hub-window-footer">
+                    <span>пока только окно хаба</span>
+                    <span class="hub-window-arrow">◎</span>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer class="hub-bottom">
+        <span>Хаб СайтСотика · три окна · один файл</span>
+        <span class="hub-bottom-pill">sitesotik / hub / index.html</span>
+    </footer>
+</div>
+
+<!-- ПОЛНОЦЕННОЕ ОКНО ДОНАТОВ -->
+<div class="sitesotik-app" id="donate-app">
+    <header class="sitesotik-header">
+        <button class="sitesotik-back" id="donate-back">Назад</button>
+        <div class="sitesotik-header-center">
+            <div class="sitesotik-header-logo-circle">
+                <div class="sitesotik-header-logo-inner">D</div>
+            </div>
+            <div class="sitesotik-header-title">ДонатыСотика</div>
+        </div>
+        <nav class="sitesotik-nav" id="donate-nav">
+            <div class="sitesotik-nav-list" id="donate-nav-list">
+                <button
+                        class="sitesotik-nav-btn sitesotik-nav-btn--active"
+                        data-page="home"
+                >
+                    Главная
+                </button>
+                <button class="sitesotik-nav-btn" data-page="donate">
+                    Донаты
+                </button>
+                <button class="sitesotik-nav-btn" data-page="rewards">
+                    Награды
+                </button>
+                <button class="sitesotik-nav-btn" data-page="history">
+                    История
+                </button>
+                <button class="sitesotik-nav-btn" data-page="faq">
+                    FAQ
+                </button>
+            </div>
+
+            <button class="sitesotik-burger" id="donate-burger" type="button">
+                <div class="sitesotik-burger-lines">
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--1"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--2"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--3"
+                    ></div>
+                </div>
+            </button>
+        </nav>
+    </header>
+
+    <main class="sitesotik-main">
+        <section class="sitesotik-frame">
+            <div class="sitesotik-frame-header">
+                <div class="sitesotik-frame-title" id="donate-frame-title">
+                    ГЛАВНАЯ
+                </div>
+                <div class="sitesotik-frame-sub" id="donate-frame-sub">
+                    центр донатов
+                </div>
+            </div>
+
+            <div class="sitesotik-frame-body">
+                <div class="sitesotik-page sitesotik-page--active" id="donate-page-home">
+                    <h2>Донаты</h2>
+                    <p>Раздел для отправки донатов и поддержки проекта.</p>
+                </div>
+
+                <div class="sitesotik-page" id="donate-page-donate">
+                    <iframe
+                            src="/sitesotik/donate/donate.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="donate-page-rewards">
+                    <iframe
+                            src="/sitesotik/donate/rewards.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="donate-page-history">
+                    <iframe
+                            src="/sitesotik/donate/history.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="donate-page-faq">
+                    <iframe
+                            src="/sitesotik/donate/faq.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ПОЛНОЦЕННОЕ ОКНО АУКЦИОНА -->
+<div class="sitesotik-app" id="auction-app">
+    <header class="sitesotik-header">
+        <button class="sitesotik-back" id="auction-back">Назад</button>
+        <div class="sitesotik-header-center">
+            <div class="sitesotik-header-logo-circle">
+                <div class="sitesotik-header-logo-inner">A</div>
+            </div>
+            <div class="sitesotik-header-title">АукционСотика</div>
+        </div>
+        <nav class="sitesotik-nav" id="auction-nav">
+            <div class="sitesotik-nav-list" id="auction-nav-list">
+                <button
+                        class="sitesotik-nav-btn sitesotik-nav-btn--active"
+                        data-page="home"
+                >
+                    Главная
+                </button>
+                <button class="sitesotik-nav-btn" data-page="lots">
+                    Лоты
+                </button>
+                <button class="sitesotik-nav-btn" data-page="mybids">
+                    Мои ставки
+                </button>
+                <button class="sitesotik-nav-btn" data-page="history">
+                    История
+                </button>
+                <button class="sitesotik-nav-btn" data-page="rules">
+                    Правила
+                </button>
+            </div>
+
+            <button class="sitesotik-burger" id="auction-burger" type="button">
+                <div class="sitesotik-burger-lines">
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--1"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--2"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--3"
+                    ></div>
+                </div>
+            </button>
+        </nav>
+    </header>
+
+    <main class="sitesotik-main">
+        <section class="sitesotik-frame">
+            <div class="sitesotik-frame-header">
+                <div class="sitesotik-frame-title" id="auction-frame-title">
+                    ГЛАВНАЯ
+                </div>
+                <div class="sitesotik-frame-sub" id="auction-frame-sub">
+                    аукционные лоты
+                </div>
+            </div>
+
+            <div class="sitesotik-frame-body">
+                <div class="sitesotik-page sitesotik-page--active" id="auction-page-home">
+                    <iframe
+                            src="/sitesotik/auction/index.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="auction-page-lots">
+                    <iframe
+                            src="/sitesotik/auction/lots.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="auction-page-mybids">
+                    <iframe
+                            src="/sitesotik/auction/mybids.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="auction-page-history">
+                    <iframe
+                            src="/sitesotik/auction/history.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="sitesotik-page" id="auction-page-rules">
+                    <iframe
+                            src="/sitesotik/auction/rules.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<!-- ПОЛНОЦЕННОЕ ОКНО САЙТСОТИКА -->
+<div class="sitesotik-app" id="sitesotik-app">
+    <header class="sitesotik-header">
+        <button class="sitesotik-back" id="sitesotik-back">Назад</button>
+        <div class="sitesotik-header-center">
+            <div class="sitesotik-header-logo-circle">
+                <div class="sitesotik-header-logo-inner">S</div>
+            </div>
+            <div class="sitesotik-header-title">СайтСотика</div>
+        </div>
+        <nav class="sitesotik-nav" id="sitesotik-nav">
+            <div class="sitesotik-nav-list" id="sitesotik-nav-list">
+                <button
+                        class="sitesotik-nav-btn sitesotik-nav-btn--active"
+                        data-page="home"
+                >
+                    Главная
+                </button>
+                <button class="sitesotik-nav-btn" data-page="about">
+                    Обо мне
+                </button>
+                <button class="sitesotik-nav-btn" data-page="games">
+                    Игры
+                </button>
+                <button class="sitesotik-nav-btn" data-page="team">
+                    Команда
+                </button>
+                <button class="sitesotik-nav-btn" data-page="partners">
+                    Партнеры
+                </button>
+            </div>
+
+            <button class="sitesotik-burger" id="sitesotik-burger" type="button">
+                <div class="sitesotik-burger-lines">
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--1"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--2"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--3"
+                    ></div>
+                </div>
+            </button>
+        </nav>
+    </header>
+
+        
+
+        <nav class="sitesotik-nav" id="sitesotik-nav">
+            <div class="sitesotik-nav-list" id="sitesotik-nav-list">
+                <button
+                        class="sitesotik-nav-btn sitesotik-nav-btn--active"
+                        data-page="home"
+                >
+                    Главная
+                </button>
+                <button class="sitesotik-nav-btn" data-page="about">
+                    Обо мне
+                </button>
+                <button class="sitesotik-nav-btn" data-page="games">
+                    Игры
+                </button>
+                <button class="sitesotik-nav-btn" data-page="team">
+                    Команда
+                </button>
+                <button class="sitesotik-nav-btn" data-page="partners">
+                    Партнеры
+                </button>
+            </div>
+
+            <button class="sitesotik-burger" id="sitesotik-burger" type="button">
+                <div class="sitesotik-burger-lines">
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--1"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--2"
+                    ></div>
+                    <div
+                            class="sitesotik-burger-line sitesotik-burger-line--3"
+                    ></div>
+                </div>
+            </button>
+        </nav>
+    </header>
+
+    <main class="sitesotik-main">
+        <section class="sitesotik-frame">
+            <div class="sitesotik-frame-header">
+                <div class="sitesotik-frame-title" id="sitesotik-frame-title">
+                    ГЛАВНАЯ
+                </div>
+                <div class="sitesotik-frame-sub" id="sitesotik-frame-sub">
+                    основной экран сайта
+                </div>
+            </div>
+
+            <div class="sitesotik-frame-body">
+                <div class="sitesotik-page sitesotik-page--active" id="page-home">
+                    <iframe
+                            src="/sitesotik/siteofsotik/index.html"
+                            class="sitesotik-iframe"
+                            loading="lazy"
+                    ></iframe>
+                </div>
+
+
+
+                <!-- ОБО МНЕ -->
+                <div class="sitesotik-page" id="page-about">
+                    <h2>Обо мне</h2>
+                    <p>
+                        Раздел о тебе: кто ты, чем занимаешься, какие гонки и проекты
+                        ведёшь.
+                    </p>
+                    <p>
+                        Здесь можно сделать досье, достижения, технику, интересные факты.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">блоки раздела</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Профиль</div>
+                                <p>Имя, ник, направление, формат стримов.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">profile</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Достижения</div>
+                                <p>Турниры, рекорды, важные моменты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">achievements</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Оборудование</div>
+                                <p>Руль, педали, ПК, мониторы, звук и т.д.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">gear</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИГРЫ -->
+                <div class="sitesotik-page" id="page-games">
+                    <h2>Игры</h2>
+                    <p>
+                        Раздел про игры, в которые ты играешь на стримах: симуляторы,
+                        гонки, другие проекты.
+                    </p>
+                    <p>
+                        Можно сделать карточки игр, расписание, результаты, ссылки на
+                        записи.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">основные игры</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Главный симулятор</div>
+                                <p>Основная игра для гонок и чемпионатов.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">main sim</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Дополнительные игры</div>
+                                <p>Проекты, которые появляются время от времени.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">extra</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Архив гонок</div>
+                                <p>Прошедшие сезоны, важные заезды, результаты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">archive</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- КОМАНДА -->
+                <div class="sitesotik-page" id="page-team">
+                    <h2>Команда</h2>
+                    <p>
+                        Люди, которые участвуют в проекте: пилоты, модераторы, техподдержка.
+                    </p>
+                    <p>
+                        Можно сделать карточки участников, роли, контакты, расписание
+                        совместных стримов.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">состав</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Пилоты</div>
+                                <p>Основные участники гонок, их роли и особенности.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">drivers</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Модераторы</div>
+                                <p>Люди, которые следят за чатом и порядком.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">mods</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Техподдержка</div>
+                                <p>Те, кто помогает с железом, софтом и сценами.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">tech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ПАРТНЕРЫ -->
+                <div class="sitesotik-page" id="page-partners">
+                    <h2>Партнеры</h2>
+                    <p>
+                        Раздел для партнёров и брендов, с которыми ты работаешь или
+                        планируешь работать.
+                    </p>
+                    <p>
+                        Логотипы, ссылки, описания, промокоды — всё можно разместить здесь.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">партнёрские блоки</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Основные партнёры</div>
+                                <p>Постоянно присутствующие бренды.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">main</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Временные интеграции</div>
+                                <p>Разовые акции и спецпроекты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">promo</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Условия</div>
+                                <p>Краткое описание формата сотрудничества и контакты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">terms</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- КОНЕЦ СТРАНИЦ -->
+
+
+
+                <!-- ОБО МНЕ -->
+                <div class="sitesotik-page" id="page-about">
+                    <h2>Обо мне</h2>
+                    <p>
+                        Раздел о тебе: кто ты, чем занимаешься, какие гонки и проекты
+                        ведёшь.
+                    </p>
+                    <p>
+                        Здесь можно сделать досье, достижения, технику, интересные факты.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">блоки раздела</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Профиль</div>
+                                <p>Имя, ник, направление, формат стримов.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">profile</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Достижения</div>
+                                <p>Турниры, рекорды, важные моменты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">achievements</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Оборудование</div>
+                                <p>Руль, педали, ПК, мониторы, звук и т.д.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">gear</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИГРЫ -->
+                <div class="sitesotik-page" id="page-games">
+                    <h2>Игры</h2>
+                    <p>
+                        Раздел про игры, в которые ты играешь на стримах: симуляторы,
+                        гонки, другие проекты.
+                    </p>
+                    <p>
+                        Можно сделать карточки игр, расписание, результаты, ссылки на
+                        записи.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">основные игры</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Главный симулятор</div>
+                                <p>Основная игра для гонок и чемпионатов.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">main sim</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Дополнительные игры</div>
+                                <p>Проекты, которые появляются время от времени.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">extra</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Архив гонок</div>
+                                <p>Прошедшие сезоны, важные заезды, результаты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">archive</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- КОМАНДА -->
+                <div class="sitesotik-page" id="page-team">
+                    <h2>Команда</h2>
+                    <p>
+                        Люди, которые участвуют в проекте: пилоты, модераторы, техподдержка.
+                    </p>
+                    <p>
+                        Можно сделать карточки участников, роли, контакты, расписание
+                        совместных стримов.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">состав</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Пилоты</div>
+                                <p>Основные участники гонок, их роли и особенности.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">drivers</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Модераторы</div>
+                                <p>Люди, которые следят за чатом и порядком.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">mods</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Техподдержка</div>
+                                <p>Те, кто помогает с железом, софтом и сценами.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">tech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ПАРТНЕРЫ -->
+                <div class="sitesotik-page" id="page-partners">
+                    <h2>Партнеры</h2>
+                    <p>
+                        Раздел для партнёров и брендов, с которыми ты работаешь или
+                        планируешь работать.
+                    </p>
+                    <p>
+                        Логотипы, ссылки, описания, промокоды — всё можно разместить здесь.
+                    </p>
+
+                    <div class="sitesotik-section">
+                        <div class="sitesotik-section-title">партнёрские блоки</div>
+                        <div class="sitesotik-grid">
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Основные партнёры</div>
+                                <p>Постоянно присутствующие бренды.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">main</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Временные интеграции</div>
+                                <p>Разовые акции и спецпроекты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">promo</span>
+                                </div>
+                            </div>
+                            <div class="sitesotik-card">
+                                <div class="sitesotik-card-title">Условия</div>
+                                <p>Краткое описание формата сотрудничества и контакты.</p>
+                                <div class="sitesotik-badges">
+                                    <span class="sitesotik-badge">terms</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- КОНЕЦ СТРАНИЦ -->
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // ПЕРЕХОД ИЗ ХАБА В САЙТСОТИКУ
+    const hubShell = document.getElementById("hub-shell");
+    const windowSitesotik = document.getElementById("window-sitesotik");
+    const sitesotikApp = document.getElementById("sitesotik-app");
+
+    // ПЕРЕХОД ИЗ ХАБА В ДОНАТЫ
+    const windowDonate = document.getElementById("window-donate");
+    const donateApp = document.getElementById("donate-app");
+
+    // ПЕРЕХОД ИЗ ХАБА В АУКЦИОН
+    const windowAuction = document.getElementById("window-auction");
+    const auctionApp = document.getElementById("auction-app");
+
+    if (hubShell && windowSitesotik && sitesotikApp) {
+      windowSitesotik.addEventListener("click", () => {
+        hubShell.classList.add("hub-shell--hidden");
+        sitesotikApp.classList.add("sitesotik-app--active");
+      });
+    }
+
+    if (hubShell && windowDonate && donateApp) {
+      windowDonate.addEventListener("click", () => {
+        hubShell.classList.add("hub-shell--hidden");
+        donateApp.classList.add("sitesotik-app--active");
+      });
+    }
+
+    if (hubShell && windowAuction && auctionApp) {
+      windowAuction.addEventListener("click", () => {
+        hubShell.classList.add("hub-shell--hidden");
+        auctionApp.classList.add("sitesotik-app--active");
+      });
+    }
+
+    // МЕНЮ САЙТСОТИКА: ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+    const sitesotikNavButtons = document.querySelectorAll("#sitesotik-nav .sitesotik-nav-btn");
+    const sitesotikPages = document.querySelectorAll("#sitesotik-app .sitesotik-page");
+    const sitesotikFrameTitle = document.getElementById("sitesotik-frame-title");
+    const sitesotikFrameSub = document.getElementById("sitesotik-frame-sub");
+
+    const sitesotikTitlesMap = {
+      home: { title: "ГЛАВНАЯ", sub: "основной экран сайта" },
+      about: { title: "ОБО МНЕ", sub: "информация о стримере" },
+      games: { title: "ИГРЫ", sub: "игровые проекты и гонки" },
+      team: { title: "КОМАНДА", sub: "люди проекта" },
+      partners: { title: "ПАРТНЕРЫ", sub: "бренды и интеграции" },
+    };
+
+    sitesotikNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const page = btn.getAttribute("data-page");
+
+        sitesotikNavButtons.forEach((b) =>
+          b.classList.remove("sitesotik-nav-btn--active")
+        );
+        btn.classList.add("sitesotik-nav-btn--active");
+
+        sitesotikPages.forEach((p) => p.classList.remove("sitesotik-page--active"));
+        const target = document.getElementById("page-" + page);
+        if (target) target.classList.add("sitesotik-page--active");
+
+        if (sitesotikTitlesMap[page]) {
+          sitesotikFrameTitle.textContent = sitesotikTitlesMap[page].title;
+          sitesotikFrameSub.textContent = sitesotikTitlesMap[page].sub;
+        }
+      });
+    });
+
+    // МЕНЮ ДОНАТОВ: ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+    const donateNavButtons = document.querySelectorAll("#donate-nav .sitesotik-nav-btn");
+    const donatePages = document.querySelectorAll("#donate-app .sitesotik-page");
+    const donateFrameTitle = document.getElementById("donate-frame-title");
+    const donateFrameSub = document.getElementById("donate-frame-sub");
+
+    const donateTitlesMap = {
+      home: { title: "ГЛАВНАЯ", sub: "центр донатов" },
+      donate: { title: "ДОНАТЫ", sub: "поддержка проекта" },
+      rewards: { title: "НАГРАДЫ", sub: "условия и получение" },
+      history: { title: "ИСТОРИЯ", sub: "ваши донаты" },
+      faq: { title: "FAQ", sub: "частые вопросы" },
+    };
+
+    donateNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const page = btn.getAttribute("data-page");
+
+        donateNavButtons.forEach((b) =>
+          b.classList.remove("sitesotik-nav-btn--active")
+        );
+        btn.classList.add("sitesotik-nav-btn--active");
+
+        donatePages.forEach((p) => p.classList.remove("sitesotik-page--active"));
+        const target = document.getElementById("donate-page-" + page);
+        if (target) target.classList.add("sitesotik-page--active");
+
+        if (donateTitlesMap[page]) {
+          donateFrameTitle.textContent = donateTitlesMap[page].title;
+          donateFrameSub.textContent = donateTitlesMap[page].sub;
+        }
+      });
+    });
+
+    // МЕНЮ АУКЦИОНА: ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+    const auctionNavButtons = document.querySelectorAll("#auction-nav .sitesotik-nav-btn");
+    const auctionPages = document.querySelectorAll("#auction-app .sitesotik-page");
+    const auctionFrameTitle = document.getElementById("auction-frame-title");
+    const auctionFrameSub = document.getElementById("auction-frame-sub");
+
+    const auctionTitlesMap = {
+      home: { title: "ГЛАВНАЯ", sub: "аукционные лоты" },
+      lots: { title: "ЛОТЫ", sub: "текущие предложения" },
+      mybids: { title: "МОИ СТАВКИ", sub: "активные торги" },
+      history: { title: "ИСТОРИЯ", sub: "завершенные аукционы" },
+      rules: { title: "ПРАВИЛА", sub: "условия участия" },
+    };
+
+    auctionNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const page = btn.getAttribute("data-page");
+
+        auctionNavButtons.forEach((b) =>
+          b.classList.remove("sitesotik-nav-btn--active")
+        );
+        btn.classList.add("sitesotik-nav-btn--active");
+
+        auctionPages.forEach((p) => p.classList.remove("sitesotik-page--active"));
+        const target = document.getElementById("auction-page-" + page);
+        if (target) target.classList.add("sitesotik-page--active");
+
+        if (auctionTitlesMap[page]) {
+          auctionFrameTitle.textContent = auctionTitlesMap[page].title;
+          auctionFrameSub.textContent = auctionTitlesMap[page].sub;
+        }
+      });
+    });
+
+    // МОБИЛЬНОЕ МЕНЮ САЙТСОТИКА
+    const sitesotikBurger = document.getElementById("sitesotik-burger");
+    const sitesotikNav = document.getElementById("sitesotik-nav");
+
+    if (sitesotikBurger && sitesotikNav) {
+      sitesotikBurger.addEventListener("click", () => {
+        sitesotikBurger.classList.toggle("sitesotik-burger--open");
+        sitesotikNav.classList.toggle("sitesotik-nav--mobile-open");
+      });
+    }
+
+    sitesotikNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (sitesotikNav.classList.contains("sitesotik-nav--mobile-open")) {
+          sitesotikNav.classList.remove("sitesotik-nav--mobile-open");
+          sitesotikBurger.classList.remove("sitesotik-burger--open");
+        }
+      });
+    });
+
+    // МОБИЛЬНОЕ МЕНЮ ДОНАТОВ
+    const donateBurger = document.getElementById("donate-burger");
+    const donateNav = document.getElementById("donate-nav");
+
+    if (donateBurger && donateNav) {
+      donateBurger.addEventListener("click", () => {
+        donateBurger.classList.toggle("sitesotik-burger--open");
+        donateNav.classList.toggle("sitesotik-nav--mobile-open");
+      });
+    }
+
+    donateNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (donateNav.classList.contains("sitesotik-nav--mobile-open")) {
+          donateNav.classList.remove("sitesotik-nav--mobile-open");
+          donateBurger.classList.remove("sitesotik-burger--open");
+        }
+      });
+    });
+
+    // МОБИЛЬНОЕ МЕНЮ АУКЦИОНА
+    const auctionBurger = document.getElementById("auction-burger");
+    const auctionNav = document.getElementById("auction-nav");
+
+    if (auctionBurger && auctionNav) {
+      auctionBurger.addEventListener("click", () => {
+        auctionBurger.classList.toggle("sitesotik-burger--open");
+        auctionNav.classList.toggle("sitesotik-nav--mobile-open");
+      });
+    }
+
+    auctionNavButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (auctionNav.classList.contains("sitesotik-nav--mobile-open")) {
+          auctionNav.classList.remove("sitesotik-nav--mobile-open");
+          auctionBurger.classList.remove("sitesotik-burger--open");
+        }
+      });
+    });
+
+    // КНОПКА НАЗАД В ХАБ
+    const backBtn = document.getElementById("sitesotik-back");
+    const donateBackBtn = document.getElementById("donate-back");
+    const auctionBackBtn = document.getElementById("auction-back");
+
+    if (backBtn && hubShell && sitesotikApp) {
+      backBtn.addEventListener("click", () => {
+        sitesotikApp.classList.remove("sitesotik-app--active");
+        setTimeout(() => {
+          hubShell.classList.remove("hub-shell--hidden");
+        }, 400);
+      });
+    }
+
+    if (donateBackBtn && hubShell && donateApp) {
+      donateBackBtn.addEventListener("click", () => {
+        donateApp.classList.remove("sitesotik-app--active");
+        setTimeout(() => {
+          hubShell.classList.remove("hub-shell--hidden");
+        }, 400);
+      });
+    }
+
+    if (auctionBackBtn && hubShell && auctionApp) {
+      auctionBackBtn.addEventListener("click", () => {
+        auctionApp.classList.remove("sitesotik-app--active");
+        setTimeout(() => {
+          hubShell.classList.remove("hub-shell--hidden");
+        }, 400);
+      });
+    }
+</script>
+</body>
+</html>

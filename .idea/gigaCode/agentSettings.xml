@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GigaCodeAgentSettings">
+    <option name="autoApprovedCommands">
+      <list>
+        <Execute>
+          <option name="pattern" value="git init &amp;&amp; git add . &amp;&amp; git status" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git init; git add .; git status" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git remote add origin https://github.com/cotukob-code/sitesotik3w.git; git branch -M main; git push -u origin main" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git status" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Initial commit&quot;; git branch -M main; git push -u origin main" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="ls &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; || echo &quot;Файл конфигурации не существует&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Test-Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot;; if ($?) { echo &quot;Существует&quot; } else { echo &quot;Не существует&quot; }" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="New-Item -Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; -ItemType File -Value &quot;Listen 80\n&lt;VirtualHost *:80&gt;\n    DocumentRoot \&quot;C:/laragon/www/sitesotik\&quot;\n    ServerName sitesotik.test\n    &lt;Directory \&quot;C:/laragon/www/sitesotik\&quot;&gt;\n        Options Indexes FollowSymLinks\n        AllowOverride All\n        Require all granted\n    &lt;/Directory&gt;\n&lt;/VirtualHost&gt;&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="$content = @&quot;&#10;Listen 80&#10;&lt;VirtualHost *:80&gt;&#10;    DocumentRoot &quot;C:/laragon/www/sitesotik&quot;&#10;    ServerName sitesotik.test&#10;    &lt;Directory &quot;C:/laragon/www/sitesotik&quot;&gt;&#10;        Options Indexes FollowSymLinks&#10;        AllowOverride All&#10;        Require all granted&#10;    &lt;/Directory&gt;&#10;&lt;/VirtualHost&gt;&#10;&quot;@; Set-Content -Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; -Value $content" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Test-Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites&quot;; if ($?) { echo &quot;Папка существует&quot; } else { echo &quot;Папка не существует&quot; }" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Add-Content -Path &quot;C:/laragon/etc/apache/laragon.conf&quot; -Value &quot;\n# Include sitesotik.test\nInclude conf/sites/sitesotik.test.conf&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Test-Path &quot;C:/laragon/etc/apache/laragon.conf&quot;; if ($?) { echo &quot;Файл существует&quot; } else { echo &quot;Файл не существует&quot; }" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:/laragon/etc/apache&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="echo &quot;# LARAGON AUTO CONFIGURATION - DO NOT REMOVE\nListen 80\nServerName localhost:80\n&quot; &gt; &quot;C:/laragon/etc/apache/laragon.conf&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:/laragon/www/sitesotik/server&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ChildItem -Path &quot;C:/laragon/www/sitesotik&quot; -Recurse | Sort-Object FullName" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="npx html-validate --rules 'no-dup-id: error, no-duplicate-attributes: error' C:/laragon/www/sitesotik/hub/index.html" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="npx htmlhint C:/laragon/www/sitesotik/hub/index.html" />
+        </Execute>
+      </list>
+    </option>
+  </component>
+</project>
