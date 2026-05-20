@@ -60,6 +60,15 @@
         <Execute>
           <option name="pattern" value="npx htmlhint C:/laragon/www/sitesotik/hub/index.html" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git status &amp;&amp; git diff HEAD &amp;&amp; git log -n 3" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add C:/laragon/www/sitesotik/siteofsotik/index.html" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git push" />
+        </Execute>
       </list>
     </option>
   </component>
