@@ -69,6 +69,15 @@
         <Execute>
           <option name="pattern" value="git push" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git status; git diff HEAD; git log -n 3" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add server/chat.js public/siteofsotik/index.html" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;feat(chat): подключить чат к онлайн-серверу&quot;" />
+        </Execute>
       </list>
     </option>
   </component>
