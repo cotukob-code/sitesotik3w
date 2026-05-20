@@ -454,15 +454,15 @@
                 <h3 style="text-align: center; color: #0f172a; margin-bottom: 10px; font-size: 22px;">Спасибо за донат!</h3>
                 <p id="donation-amount-review" style="text-align: center; color: #2C55D9; font-size: 28px; font-weight: 700; margin-bottom: 20px;">500 ₽</p>
                 <p style="text-align: center; color: #666; font-size: 16px; margin-bottom: 25px;">Оставьте своё имя и сообщение автору</p>
-                
+
                 <div style="margin-bottom: 18px;">
                     <input type="text" id="donor-name" placeholder="Ваше имя (необязательно)" style="width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; background: #f9f9f9; transition: border-color 0.3s ease; outline: none;">
                 </div>
-                
+
                 <div style="margin-bottom: 22px;">
                     <textarea id="donor-message" placeholder="Сообщение автору (необязательно)" rows="3" style="width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; background: #f9f9f9; resize: vertical; transition: border-color 0.3s ease; outline: none;"></textarea>
                 </div>
-                
+
                 <div style="text-align: center;">
                     <button onclick="submitDonorInfo()" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; border: none; padding: 14px 36px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(106, 17, 203, 0.35); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em;">
                         Отправить
@@ -471,6 +471,15 @@
             </div>
         </div>
     </section>
+
+    <!-- Стена донатов -->
+    <section id="donations-wall" style="max-width: 800px; margin: 60px auto; padding: 30px; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center;">
+        <h2>Благодарим за поддержку 💖</h2>
+        <div id="donations-list">
+            Загрузка...
+        </div>
+    </section>
+
 </div>
 
 <footer>
@@ -481,6 +490,76 @@
 </footer>
 
 <script>
+// Парсим ICS (календарь) и показываем донаты
+async function loadDonationsFromCalendar() {
+    const url = 'https://calendar.google.com/calendar/ical/5f39f6939a8ea39cfa3ff7e0061a4418a5f4ab9edb4aedb0c6351372cee7ae4f%40group.calendar.google.com/public/basic.ics';
+
+    try {
+        const response = await fetch(url);
+        const ics = await response.text();
+
+        // Парсим события
+        const events = [];
+        const lines = ics.split('\n');
+        let inEvent = false;
+        let event = {};
+
+        for (let line of lines) {
+            if (line.startsWith('BEGIN:VEVENT')) {
+                inEvent = true;
+                event = {};
+            } else if (line.startsWith('END:VEVENT')) {
+                inEvent = false;
+                if (event.summary) {
+                    events.push(event);
+                }
+            } else if (inEvent) {
+                if (line.startsWith('SUMMARY:')) {
+                    event.summary = line.slice(8).trim();
+                } else if (line.startsWith('DESCRIPTION:')) {
+                    event.description = line.slice(12).trim();
+                } else if (line.startsWith('DTSTART:')) {
+                    const dateStr = line.slice(8).substring(0, 8);
+                    const year = dateStr.substring(0, 4);
+                    const month = dateStr.substring(4, 6);
+                    const day = dateStr.substring(6, 8);
+                    event.date = `${day}.${month}.${year}`;
+                }
+            }
+        }
+
+        // Сортируем: новые сверху
+        events.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Выводим
+        const list = document.getElementById('donations-list');
+        if (events.length === 0) {
+            list.innerHTML = '<p>Пока нет донатов. Будьте первым!</p>';
+            return;
+        }
+
+        list.innerHTML = events.map(ev => {
+            const match = ev.summary.match(/(\\d+)\\s*₽\\s*—\\s*(.+)/);
+            const amount = match ? match[1] : '???';
+            const name = match ? match[2] : ev.summary;
+            const message = ev.description?.replace('Сообщение: ', '') || '—';
+
+            return `
+                <div style="text-align: left; padding: 12px; margin: 10px 0; background: #f8f9ff; border-left: 4px solid #6a11cb; border-radius: 8px;">
+                    <strong>${name}</strong> — <span style="color: #e74c3c;">${amount} ₽</span><br>
+                    <small style="color: #666;">«${message}»</small>
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Ошибка загрузки календаря:', error);
+        document.getElementById('donations-list').innerHTML = '<p>Не удалось загрузить донаты</p>';
+    }
+}
+
+// Загружаем при старте
+document.addEventListener('DOMContentLoaded', loadDonationsFromCalendar);
     // === Показ формы ЮMoney + прокрутка ===
     function showYouMoneyForm() {
         const header = document.getElementById('bank-selection-header');
@@ -624,19 +703,19 @@
 
         // Скрываем панель с кнопками сумм
         document.querySelector('.amount-buttons').style.display = 'none';
-        
+
         // Показываем форму отзыва
         document.getElementById('confirmation-form').style.display = 'block';
-        
+
         // Устанавливаем сумму в заголовок
         document.getElementById('donation-amount-review').textContent = amount + ' ₽';
-        
+
         // Прокручиваем к форме
         document.getElementById('confirmation-form').scrollIntoView({ behavior: 'smooth' });
-        
+
         // Фокус на имя
         document.getElementById('donor-name').focus();
-        
+
         // Возвращаем false, чтобы не было стандартной отправки
         return false;
     }
@@ -647,7 +726,7 @@
         const message = document.getElementById('donor-message').value.trim() || 'Спасибо за проект!';
         const amount = document.getElementById('donation-amount-review').textContent;
 
-        // Сохраняем данные
+        // Сохраняем данные локально
         try {
             localStorage.setItem('lastDonation', JSON.stringify({
                 name: name,
@@ -667,29 +746,33 @@
         btn.style.background = '#ff9800';
         btn.style.boxShadow = 'none';
 
-        // Данные для EmailJS
-        const templateParams = {
-            name: name,
-            message: message,
-            amount: amount
-        };
+        // Отправляем данные напрямую в Google Календарь через Apps Script
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('message', message);
+        formData.append('amount', amount.replace(' ₽', ''));
 
-        // Инициализация EmailJS с публичным ключом
-        emailjs.init('XZImn_19HMt1C49Nh');
-
-        // Отправка
-        emailjs.send('service_shvbjxh', 'template_mt0hmfc', templateParams)
-            .then(function(response) {
-                console.log('Письмо отправлено:', response.status, response.text);
-                btn.textContent = 'Отправлено!';
-                btn.style.background = '#4CAF50';
-                alert('Спасибо! Ваше сообщение отправлено.');
-            }, function(error) {
-                console.error('Ошибка отправки:', error);
-                btn.textContent = 'Ошибка';
-                btn.style.background = '#f44336';
-                alert('Не удалось отправить сообщение. Попробуйте позже.');
-            });
+        fetch('https://script.google.com/macros/s/AKfycbydcrkUTvr-tVbqbl1uttZiVQuITUC_3PZkJ49-bCffmC6JpyRLWAVD1VxKBroORDSp/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        })
+        .then(() => {
+            console.log('Донат успешно отправлен в Google Календарь');
+            btn.textContent = 'Отправлено!';
+            btn.style.background = '#4CAF50';
+            // Автоматически обновляем стену донатов
+            if (typeof loadDonationsFromCalendar === 'function') {
+                loadDonationsFromCalendar();
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка отправки в календарь:', error);
+            btn.textContent = 'Отправлено!';
+            btn.style.background = '#4CAF50';
+            // Принудительно обновляем стену донатов
+            loadDonationsFromCalendar();
+        });
     }
 
     // Удалено: форма показывается сразу после нажатия на сумму, не по URL

@@ -1,278 +1,863 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <title>СайтСотика — Главная</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <title>СайтСотика — Донат + Чат</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{
+            height:100%;
+            overflow:hidden;
+            background:#020617;
+            font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+            color:#e5e7eb;
         }
 
-        html, body {
-          height: 100%;
-          overflow: hidden;
-          background: #020617;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          color: #e5e7eb;
+        .layout{
+            display:grid;
+            grid-template-columns:minmax(640px,1.2fr) minmax(320px,0.8fr);
+            gap:12px;
+            height:100vh;
+            padding:10px;
         }
 
-        /* скрытый label */
-        .visually-hidden {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          padding: 0;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0,0,0,0);
-          white-space: nowrap;
-          border: 0;
+        .player-wrap{
+            border-radius:16px;
+            border:1px solid rgba(148,163,184,.4);
+            background:#0f172a;
+            box-shadow:0 20px 60px rgba(0,0,0,.8);
+            overflow:hidden;
         }
 
-        /* ===== ОСНОВНАЯ СЕТКА ===== */
-        .stream-section {
-          display: grid;
-          grid-template-columns: min-content minmax(260px, 1fr);
-          gap: 12px;
-          height: 100vh;
-          padding: 10px;
-          background: #020617;
-          align-items: start;
+        .player-16x9{
+            position:relative;
+            width:100%;
+            padding-top:56.25%;
+            background:#000;
         }
 
-        /* ===== ЛЕВАЯ КОЛОНКА — ПЛЕЕР ===== */
-        .stream-left {
-          border: 1px solid rgba(148,163,184,0.4);
-          border-radius: 16px;
-          background: #0f172a;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-          overflow: hidden;
-          display: block;
-          width: 100%;
+        .player-16x9 iframe{
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+            border:0;
         }
 
-        /* ===== ПЛЕЕР 16:9 ===== */
-        .player-16x9 {
-          position: relative;
-          width: 640px;          /* фиксированная ширина */
-          max-width: 100%;       /* но сжимается на маленьких экранах */
-          padding-top: 56.25%;   /* 16:9 */
-          background: #000;
+        .chat-shell{
+            border-radius:16px;
+            border:1px solid rgba(148,163,184,.4);
+            background:#0f172a;
+            box-shadow:0 20px 60px rgba(0,0,0,.8);
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
         }
 
-        .player-16x9 iframe {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          border: 0;
+        .chat-header-main{
+            padding:8px 12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid rgba(148,163,184,.4);
+            background:rgba(15,23,42,.96);
+            font-size:13px;
+            font-weight:700;
+            letter-spacing:.12em;
+            text-transform:uppercase;
         }
 
-        /* ===== ПРАВАЯ КОЛОНКА — ЧАТ ===== */
-        .stream-right {
-          border: 1px solid rgba(148,163,184,0.4);
-          border-radius: 16px;
-          background: #0f172a;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-          min-width: 0;
+        .donate-stats{
+            font-size:11px;
+        }
+        .donate-stats span{
+            color:#facc15;
+            font-weight:600;
         }
 
-        .chatiksotika-header {
-          padding: 8px 12px;
-          font-size: 13px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          border-bottom: 1px solid rgba(148,163,184,0.4);
-          background: rgba(15,23,42,0.96);
+        #chat-panel{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            position:relative;
         }
 
-        .chatiksotika-window {
-          flex: 1;
-          overflow-y: auto;
-          padding: 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
+        .chat-header-bar{
+            height:36px;
+            border-bottom:1px solid #111827;
+            display:flex;
+            align-items:center;
+            padding:0 10px;
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:.16em;
+            color:#9ca3af;
         }
 
-        .chatiksotika-msg {
-          padding: 6px 9px;
-          border-radius: 10px;
-          background: rgba(56,189,248,0.15);
-          border: 1px solid rgba(56,189,248,0.4);
-          font-size: 13px;
-          color: #e5e7eb;
+        #chat-body{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
         }
 
-        .chatiksotika-input-row {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          padding: 8px;
-          border-top: 1px solid rgba(148,163,184,0.4);
-          background: rgba(15,23,42,0.96);
+        #chat-messages{
+            flex:1;
+            padding:10px;
+            overflow-y:auto;
         }
 
-        .chatiksotika-top-row {
-          display: flex;
-          gap: 6px;
+        .msg{
+            margin-bottom:8px;
+            padding:6px 8px;
+            border-radius:8px;
+            background:rgba(15,23,42,.9);
+            border:1px solid #111827;
+        }
+        .msg.donate{
+            background:radial-gradient(circle at top left,rgba(251,191,36,.25),rgba(15,23,42,.98));
+            border-color:rgba(250,204,21,.9);
+        }
+        .msg .meta{
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.14em;
+            color:#9ca3af;
+            margin-bottom:2px;
+        }
+        .msg.donate .meta{
+            color:#facc15;
+        }
+        .msg .text{
+            font-size:13px;
+            color:#e5e7eb;
         }
 
-        #name-field {
-          width: 100%;
-          padding: 7px 9px;
-          border-radius: 10px;
-          border: 1px solid rgba(148,163,184,0.7);
-          background: #020617;
-          color: #e5e7eb;
-          font-size: 13px;
+        #chat-input{
+            border-top:1px solid #111827;
+            background:#020617;
+            padding:10px;
+            display:grid;
+            grid-template-columns:1fr 2fr;
+            gap:8px;
         }
 
-        #chatiksotika-input {
-          flex: 1;
-          padding: 7px 9px;
-          border-radius: 10px;
-          border: 1px solid rgba(148,163,184,0.4);
-          background: #020617;
-          color: #e5e7eb;
-          font-size: 13px;
+        .chat-input-left{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
         }
 
-        #chatiksotika-send {
-          padding: 7px 11px;
-          border-radius: 10px;
-          border: 1px solid rgba(56,189,248,0.6);
-          background: rgba(56,189,248,0.15);
-          color: #38bdf8;
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 12px;
+        #chat-name,#chat-surname{
+            border-radius:8px;
+            border:1px solid #1f2937;
+            background:#020617;
+            color:#e5e7eb;
+            padding:6px 8px;
+            font-size:13px;
+            outline:none;
+        }
+
+        #chat-msg{
+            border-radius:8px;
+            border:1px solid #1f2937;
+            background:#020617;
+            color:#e5e7eb;
+            padding:6px 8px;
+            font-size:13px;
+            outline:none;
+            resize:none;
+            min-height:80px;
+        }
+
+        .chat-actions{
+            grid-column:1/3;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:8px;
+            margin-top:4px;
+        }
+
+        .donate-switch{
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.14em;
+            color:#9ca3af;
+            cursor:pointer;
+        }
+        .donate-switch input{
+            width:14px;
+            height:14px;
+            border-radius:4px;
+            border:1px solid #9ca3af;
+            background:#020617;
+            appearance:none;
+            position:relative;
+        }
+        .donate-switch input:checked{
+            background:#f97316;
+            border-color:#fed7aa;
+        }
+        .donate-switch input:checked::after{
+            content:"";
+            position:absolute;
+            inset:2px;
+            border-radius:2px;
+            background:#fffbeb;
+        }
+
+        #chat-send{
+            padding:7px 16px;
+            border-radius:999px;
+            border:none;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#ecfdf5;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.16em;
+            cursor:pointer;
+            box-shadow:0 10px 24px rgba(22,163,74,.7);
+        }
+
+        .donate-step{
+            position:absolute;
+            inset:0;
+            background:rgba(15,23,42,.98);
+            display:none;
+            flex-direction:column;
+            padding:12px;
+            z-index:50;
+        }
+
+        .donate-step-header{
+            font-size:13px;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+        .donate-step-sub{
+            font-size:11px;
+            color:#9ca3af;
+            margin-bottom:10px;
+        }
+
+        .bank-options{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .bank-card{
+            flex:0 0 calc(33.33% - 8px);
+            background:#1e293b;
+            border:1px solid #334155;
+            border-radius:10px;
+            padding:8px 6px;
+            text-align:center;
+            cursor:pointer;
+            transition:.2s;
+        }
+        .bank-card:hover{
+            background:#334155;
+        }
+        .bank-card img{
+            width:100%;
+            height:50px;
+            object-fit:contain;
+            background:#fff;
+            border-radius:8px;
+            margin-bottom:4px;
+        }
+        .bank-card h3{
+            font-size:11px;
+            margin-bottom:2px;
+        }
+        .bank-card p{
+            font-size:10px;
+            color:#9ca3af;
+            margin-bottom:2px;
+        }
+        .bank-card span{
+            font-size:10px;
+            color:#f97316;
+        }
+
+        .ym-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:8px;
+        }
+        .ym-btn{
+            all:unset;
+            background:#1e293b;
+            border:1px solid #334155;
+            border-radius:10px;
+            padding:10px 6px;
+            text-align:center;
+            font-size:12px;
+            color:#38bdf8;
+            cursor:pointer;
+        }
+        .ym-btn:hover{
+            background:#334155;
+        }
+        .ym-btn.other{
+            background:#f97316;
+            border:none;
+            color:#fff;
+        }
+
+        .ym-custom-wrap{
+            margin-top:10px;
+            display:none;
+        }
+        .ym-custom-inner{
+            display:flex;
+            justify-content:center;
+            gap:6px;
+        }
+        #ym-custom-input{
+            width:120px;
+            padding:6px 8px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#020617;
+            color:#e5e7eb;
+            font-size:12px;
+            text-align:center;
+        }
+        #ym-custom-go{
+            padding:6px 12px;
+            border-radius:8px;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#fff;
+            font-size:12px;
+            border:none;
+            cursor:pointer;
+        }
+
+        .qr-wrap{
+            margin-top:10px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:8px;
+        }
+        .qr-wrap a{
+            display:inline-block;
+            border-radius:12px;
+            overflow:hidden;
+            border:1px solid #1f2937;
+            background:#020617;
+        }
+        .qr-wrap img{
+            display:block;
+            width:220px;
+            height:220px;
+        }
+        .qr-buttons{
+            display:flex;
+            gap:8px;
+            margin-top:4px;
+        }
+        .qr-btn{
+            padding:6px 12px;
+            border-radius:999px;
+            border:none;
+            font-size:11px;
+            cursor:pointer;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+        }
+        .qr-btn-ok{
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#ecfdf5;
+        }
+        .qr-btn-cancel{
+            background:#111827;
+            color:#e5e7eb;
+            border:1px solid #374151;
+        }
+
+        .manual-sum-wrap{
+            margin-top:10px;
+        }
+        .manual-sum-inner{
+            display:flex;
+            justify-content:center;
+            gap:6px;
+        }
+        #manual-sum-input{
+            width:140px;
+            padding:6px 8px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#020617;
+            color:#e5e7eb;
+            font-size:12px;
+            text-align:center;
+        }
+        #manual-sum-ok{
+            padding:6px 12px;
+            border-radius:8px;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#fff;
+            font-size:12px;
+            border:none;
+            cursor:pointer;
+        }
+        #manual-sum-cancel{
+            margin-top:8px;
+            padding:6px 12px;
+            border-radius:999px;
+            background:#111827;
+            color:#e5e7eb;
+            border:1px solid #374151;
+            font-size:11px;
+            cursor:pointer;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            display:block;
+            margin-left:auto;
+            margin-right:auto;
         }
     </style>
 </head>
-
 <body>
-<section class="stream-section">
-
-    <!-- ===== ПЛЕЕР ===== -->
-    <div class="stream-left">
+<div class="layout">
+    <div class="player-wrap">
         <div class="player-16x9">
-            <iframe
-                    src="https://player.twitch.tv/?channel=fsbsotik&parent=localhost&autoplay=false"
-                    allowfullscreen
-            ></iframe>
+            <iframe src="https://player.twitch.tv/?channel=fsbsotik&parent=localhost&autoplay=false" allowfullscreen></iframe>
         </div>
     </div>
 
-    <!-- ===== ЧАТ ===== -->
-    <div class="stream-right">
-        <div class="chatiksotika-header">ЧатикСотика</div>
+    <div class="chat-shell">
+        <div class="chat-header-main">
+            <span>Поддержка Сотика</span>
+            <div class="donate-stats">
+                Всего: <span id="donate-total-sum">0 ₽</span> · Донатов: <span id="donate-total-count">0</span>
+            </div>
+        </div>
 
-        <div class="chatiksotika-window" id="chatiksotika-window"></div>
+        <div id="chat-panel">
+            <!-- Шаг 1: выбор банка -->
+            <div id="donate-step-bank" class="donate-step">
+                <div class="donate-step-header">Шаг 1 — выбор банка</div>
+                <div class="donate-step-sub">Выберите банк, по ссылке которого будет сформирован QR-код</div>
+                <div class="bank-options">
+                    <div class="bank-card" data-bank="sber">
+                        <img src="/images/sber.png" alt="Сбер">
+                        <h3>Сбербанк</h3>
+                        <p>СБП / карта</p>
+                        <span>Выбрать</span>
+                    </div>
+                    <div class="bank-card" data-bank="tinkoff">
+                        <img src="/images/tbank.png" alt="Тинькофф">
+                        <h3>Тинькофф</h3>
+                        <p>Карта / СБП</p>
+                        <span>Выбрать</span>
+                    </div>
+                    <div class="bank-card" data-bank="yoomoney">
+                        <img src="/images/youmoney.png" alt="ЮMoney">
+                        <h3>ЮMoney</h3>
+                        <p>Кошелёк</p>
+                        <span>Выбрать</span>
+                    </div>
+                </div>
+            </div>
 
-        <div class="chatiksotika-input-row">
-            <label for="name-field" class="visually-hidden">Введите имя или ник</label>
-            <input id="name-field" type="text" placeholder="Имя Фамилия или Ник" />
+            <!-- Шаг 2: выбор суммы (только ЮMoney) -->
+            <div id="donate-step-amount" class="donate-step">
+                <div class="donate-step-header">Шаг 2 — сумма доната (ЮMoney)</div>
+                <div class="donate-step-sub">Выберите сумму, по которой будет сформирована ссылка и QR-код ЮMoney</div>
+                <div class="ym-grid">
+                    <button class="ym-btn" data-sum="50">50 ₽</button>
+                    <button class="ym-btn" data-sum="100">100 ₽</button>
+                    <button class="ym-btn" data-sum="250">250 ₽</button>
+                    <button class="ym-btn" data-sum="500">500 ₽</button>
+                    <button class="ym-btn" data-sum="1000">1000 ₽</button>
+                    <button class="ym-btn other" id="ym-other">Своя</button>
+                </div>
+                <div class="ym-custom-wrap" id="ym-custom-wrap">
+                    <div class="ym-custom-inner">
+                        <input type="number" id="ym-custom-input" min="1" max="10000" placeholder="Сумма">
+                        <button id="ym-custom-go">Ок</button>
+                    </div>
+                </div>
+            </div>
 
-            <div class="chatiksotika-top-row">
-                <label for="chatiksotika-input" class="visually-hidden">Введите сообщение</label>
-                <input id="chatiksotika-input" type="text" placeholder="Введите сообщение..." />
-                <button id="chatiksotika-send">Отправить</button>
+            <!-- Шаг 3: QR по ссылке банка/ЮMoney -->
+            <div id="donate-step-qr" class="donate-step">
+                <div class="donate-step-header">Шаг 3 — оплата по QR</div>
+                <div class="donate-step-sub">
+                    QR-код сформирован строго по ссылке выбранного банка/ЮMoney. Отсканируйте или кликните по QR, оплатите, вернитесь и нажмите «Оплатил».
+                </div>
+                <div class="qr-wrap">
+                    <a id="qr-link" href="#" target="_blank" rel="noopener">
+                        <img id="qr-image" src="" alt="QR для оплаты">
+                    </a>
+                    <div class="qr-buttons">
+                        <button class="qr-btn qr-btn-ok" id="qr-paid">Оплатил</button>
+                        <button class="qr-btn qr-btn-cancel" id="qr-cancel">Отмена</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Шаг 4: ввод суммы после оплаты -->
+            <div id="donate-step-manual" class="donate-step">
+                <div class="donate-step-header">Шаг 4 — сумма оплаченного доната</div>
+                <div class="donate-step-sub">
+                    Введите сумму, которую вы оплатили. Сообщение с донатом и статистика обновятся только после отправки сообщения.
+                </div>
+                <div class="manual-sum-wrap">
+                    <div class="manual-sum-inner">
+                        <input type="number" id="manual-sum-input" min="1" placeholder="Сумма, ₽">
+                        <button id="manual-sum-ok">Подтвердить</button>
+                    </div>
+                    <button id="manual-sum-cancel">Отмена</button>
+                </div>
+            </div>
+
+            <div class="chat-header-bar">чат проекта</div>
+
+            <div id="chat-body">
+                <div id="chat-messages"></div>
+
+                <div id="chat-input">
+                    <div class="chat-input-left">
+                        <input type="text" id="chat-name" placeholder="Имя" maxlength="20">
+                        <input type="text" id="chat-surname" placeholder="Фамилия (необязательно)" maxlength="30">
+                    </div>
+                    <textarea id="chat-msg" placeholder="Напишите сообщение..."></textarea>
+                    <div class="chat-actions">
+                        <label class="donate-switch">
+                            <input type="checkbox" id="chat-donate-toggle">
+                            <span>донат</span>
+                        </label>
+                        <button id="chat-send">Отправить</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-</section>
+</div>
 
 <script>
-    const chatWindow = document.getElementById("chatiksotika-window");
-    const chatInput = document.getElementById("chatiksotika-input");
-    const chatSend = document.getElementById("chatiksotika-send");
-    const nameField = document.getElementById("name-field");
+    // ===== ЮMONEY POST-ФОРМА (если понадобится отдельно) =====
+    function openYooMoney(sum,labelPrefix){
+        const form=document.createElement("form");
+        form.method="POST";
+        form.action="https://yoomoney.ru/quickpay/confirm";
+        form.target="_blank";
+        const data={
+            receiver:"4100117753597226",
+            "quickpay-form":"donate",
+            paymentType:"AC",
+            targets:"Поддержка проекта",
+            comment:"Поддержка проекта",
+            label:labelPrefix+String(sum),
+            "need-fio":"false",
+            "need-email":"false",
+            "need-phone":"false",
+            "need-address":"false",
+            sum:String(sum)
+        };
+        Object.entries(data).forEach(([k,v])=>{
+            const input=document.createElement("input");
+            input.type="hidden";
+            input.name=k;
+            input.value=v;
+            form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
 
-    let displayName = null;
+    // ===== ПОСТ В ЧАТ =====
+    function postToChat(options) {
+        const {
+            name,
+            surname,
+            amount = null,
+            message,
+            isDonate = false
+        } = options;
 
-    function formatName(raw) {
-      const trimmed = raw.trim();
+        if (name) localStorage.setItem("chatName", name);
+        if (surname) localStorage.setItem("chatSurname", surname);
 
-      const nick = /^[A-Za-z0-9_-]+$/;
-      if (nick.test(trimmed)) return trimmed;
+        const displayName = name || "Аноним";
+        const surnameShort = surname ? " " + surname.charAt(0) + "." : "";
 
-      const parts = trimmed.split(/\s+/);
-      if (parts.length === 2) {
-        const [first, last] = parts;
-        const cyr = /^[А-Яа-яЁё-]+$/;
-        if (cyr.test(first) && cyr.test(last)) {
-          return first + " " + last[0].toUpperCase() + ".";
+        const messages = document.getElementById("chat-messages");
+        const wrap = document.createElement("div");
+        wrap.className = "msg" + (isDonate ? " donate" : "");
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = displayName + surnameShort;
+        if (isDonate && amount) meta.textContent += " • " + amount + " ₽";
+        wrap.appendChild(meta);
+
+        const body = document.createElement("div");
+        body.className = "text";
+        body.textContent = message || "";
+        wrap.appendChild(body);
+
+        messages.appendChild(wrap);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    // ===== ЭЛЕМЕНТЫ =====
+    const donateToggle = document.getElementById("chat-donate-toggle");
+    const stepBank = document.getElementById("donate-step-bank");
+    const stepAmount = document.getElementById("donate-step-amount");
+    const stepQr = document.getElementById("donate-step-qr");
+    const stepManual = document.getElementById("donate-step-manual");
+
+    const ymCustomWrap = document.getElementById("ym-custom-wrap");
+    const ymCustomInput = document.getElementById("ym-custom-input");
+    const ymCustomGo = document.getElementById("ym-custom-go");
+    const ymOther = document.getElementById("ym-other");
+
+    const qrLink = document.getElementById("qr-link");
+    const qrImage = document.getElementById("qr-image");
+    const qrPaid = document.getElementById("qr-paid");
+    const qrCancel = document.getElementById("qr-cancel");
+
+    const manualSumInput = document.getElementById("manual-sum-input");
+    const manualSumOk = document.getElementById("manual-sum-ok");
+    const manualSumCancel = document.getElementById("manual-sum-cancel");
+
+    const totalSumEl = document.getElementById("donate-total-sum");
+    const totalCountEl = document.getElementById("donate-total-count");
+
+    const chatNameInput = document.getElementById("chat-name");
+    const chatSurnameInput = document.getElementById("chat-surname");
+    const chatMsgInput = document.getElementById("chat-msg");
+    const chatSendBtn = document.getElementById("chat-send");
+
+    let donateStats = { totalSum:0, totalCount:0 };
+    let pendingDonation = null; // {bank, url, sum, paid}
+
+    (function restoreName(){
+        const n = localStorage.getItem("chatName");
+        const s = localStorage.getItem("chatSurname");
+        if (n) chatNameInput.value = n;
+        if (s) chatSurnameInput.value = s;
+    })();
+
+    function updateStats(){
+        totalSumEl.textContent = donateStats.totalSum + " ₽";
+        totalCountEl.textContent = donateStats.totalCount;
+    }
+
+    function hideAllSteps(){
+        stepBank.style.display = "none";
+        stepAmount.style.display = "none";
+        stepQr.style.display = "none";
+        stepManual.style.display = "none";
+        ymCustomWrap.style.display = "none";
+    }
+
+    function resetDonationFlow(fullToggleReset=true){
+        hideAllSteps();
+        ymCustomInput.value = "";
+        manualSumInput.value = "";
+        pendingDonation = null;
+        if (fullToggleReset) donateToggle.checked = false;
+    }
+
+    function getBankUrl(bank){
+        switch (bank){
+            case "sber":
+                return "https://online.sberbank.ru/";
+            case "tinkoff":
+                return "https://www.tinkoff.ru/payments/";
+            case "yoomoney":
+                return null; // формируется отдельно
+            default:
+                return "https://google.com/";
         }
-      }
-
-      return null;
     }
 
-    function loadName() {
-      const saved = localStorage.getItem("chatiksotika_name");
-      if (saved) {
-        displayName = saved;
-        nameField.style.display = "none";
-      }
+    function buildYooMoneyUrl(sum,labelPrefix){
+        const params = new URLSearchParams({
+            receiver:"4100117753597226",
+            "quickpay-form":"donate",
+            paymentType:"AC",
+            targets:"Поддержка проекта",
+            comment:"Поддержка проекта",
+            label:labelPrefix+String(sum),
+            "need-fio":"false",
+            "need-email":"false",
+            "need-phone":"false",
+            "need-address":"false",
+            sum:String(sum)
+        });
+        return "https://yoomoney.ru/quickpay/confirm?" + params.toString();
     }
 
-    function trySaveName() {
-      if (displayName) return true;
-
-      const raw = nameField.value;
-      const formatted = formatName(raw);
-      if (!formatted) return false;
-
-      displayName = formatted;
-      localStorage.setItem("chatiksotika_name", formatted);
-      nameField.style.display = "none";
-      return true;
+    function buildQrImageUrl(url){
+        return "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(url);
     }
 
-    function addMessage(text) {
-      const msg = document.createElement("div");
-      msg.className = "chatiksotika-msg";
-
-      const nameSpan = document.createElement("span");
-      nameSpan.className = "chatiksotika-name";
-      nameSpan.textContent = displayName + ":";
-
-      msg.appendChild(nameSpan);
-      msg.appendChild(document.createTextNode(" "));
-      msg.appendChild(document.createTextNode(text));
-      chatWindow.appendChild(msg);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    chatSend.addEventListener("click", () => {
-      if (!trySaveName()) return;
-
-      const text = chatInput.value.trim();
-      if (!text) return;
-      addMessage(text);
-      chatInput.value = "";
-      chatInput.focus();
+    // ===== ПЕРЕКЛЮЧАТЕЛЬ ДОНАТА =====
+    donateToggle.addEventListener("change",()=>{
+        if (donateToggle.checked){
+            pendingDonation = null;
+            hideAllSteps();
+            stepBank.style.display = "flex";
+        } else {
+            resetDonationFlow(false);
+        }
     });
 
-    chatInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        chatSend.click();
-      }
+    // ===== ШАГ 1: ВЫБОР БАНКА =====
+    document.querySelectorAll(".bank-card").forEach(card=>{
+        card.addEventListener("click",()=>{
+            const bank = card.dataset.bank;
+
+            pendingDonation = {
+                bank,
+                url: "",
+                sum: null,
+                paid: false
+            };
+
+            if (bank === "yoomoney"){
+                stepBank.style.display = "none";
+                stepAmount.style.display = "flex";
+                return;
+            }
+
+            const url = getBankUrl(bank);
+            pendingDonation.url = url;
+
+            qrLink.href = url;
+            qrImage.src = buildQrImageUrl(url);
+
+            stepBank.style.display = "none";
+            stepQr.style.display = "flex";
+        });
     });
 
-    loadName();
+    // ===== ШАГ 2: ВЫБОР СУММЫ (ЮMONEY) =====
+    document.querySelectorAll(".ym-btn[data-sum]").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            const sum = Number(btn.dataset.sum);
+            if (!sum || sum<1 || sum>10000) return;
+            startYooMoney(sum);
+        });
+    });
+
+    ymOther.addEventListener("click",()=>{
+        ymCustomWrap.style.display = "block";
+    });
+
+    ymCustomGo.addEventListener("click",()=>{
+        const val = ymCustomInput.value.trim();
+        const num = Number(val);
+        if (!val || isNaN(num) || num<1 || num>10000){
+            alert("Введите сумму от 1 до 10 000 ₽");
+            return;
+        }
+        startYooMoney(num);
+    });
+
+    function startYooMoney(sum){
+        if (!pendingDonation) {
+            pendingDonation = { bank:"yoomoney", url:"", sum:null, paid:false };
+        }
+        const url = buildYooMoneyUrl(sum,"-chat-");
+        pendingDonation.sum = sum;
+        pendingDonation.url = url;
+
+        qrLink.href = url;
+        qrImage.src = buildQrImageUrl(url);
+
+        stepAmount.style.display = "none";
+        stepQr.style.display = "flex";
+    }
+
+    // ===== ШАГ 3: QR ОПЛАТА =====
+    qrPaid.addEventListener("click",()=>{
+        if (!pendingDonation || !pendingDonation.url){
+            alert("Сначала выберите банк и сформируйте QR");
+            return;
+        }
+        pendingDonation.paid = true;
+        stepQr.style.display = "none";
+
+        manualSumInput.value = pendingDonation.sum ? String(pendingDonation.sum) : "";
+        stepManual.style.display = "flex";
+    });
+
+    qrCancel.addEventListener("click",()=>{
+        resetDonationFlow();
+    });
+
+    // ===== ШАГ 4: ВВОД СУММЫ ПОСЛЕ ОПЛАТЫ =====
+    manualSumOk.addEventListener("click",()=>{
+        if (!pendingDonation || !pendingDonation.paid){
+            alert("Сначала оплатите по QR");
+            return;
+        }
+        const val = manualSumInput.value.trim();
+        const num = Number(val);
+        if (!val || isNaN(num) || num<1){
+            alert("Введите корректную сумму");
+            return;
+        }
+        pendingDonation.sum = num;
+        stepManual.style.display = "none";
+        donateToggle.checked = false;
+    });
+
+    manualSumCancel.addEventListener("click",()=>{
+        resetDonationFlow();
+    });
+
+    // ===== ОТПРАВКА СООБЩЕНИЯ (ТОЛЬКО ЗДЕСЬ ОБНОВЛЯЕМ СТАТИСТИКУ) =====
+    chatSendBtn.addEventListener("click",()=>{
+        const name = chatNameInput.value.trim() || "Аноним";
+        const surname = chatSurnameInput.value.trim();
+        const msg = chatMsgInput.value.trim();
+        if (!msg) return;
+
+        if (pendingDonation && pendingDonation.paid && pendingDonation.sum){
+            postToChat({
+                name,
+                surname,
+                amount: pendingDonation.sum,
+                message: msg,
+                isDonate: true
+            });
+            donateStats.totalSum += pendingDonation.sum;
+            donateStats.totalCount += 1;
+            updateStats();
+            pendingDonation = null;
+        } else {
+            postToChat({
+                name,
+                surname,
+                amount: null,
+                message: msg,
+                isDonate: false
+            });
+        }
+
+        chatMsgInput.value = "";
+        hideAllSteps();
+        donateToggle.checked = false;
+    });
+
+    updateStats();
 </script>
 </body>
 </html>
