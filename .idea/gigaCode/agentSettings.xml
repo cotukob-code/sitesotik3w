@@ -114,6 +114,12 @@
         <Execute>
           <option name="pattern" value="curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Тестовое изменение для проверки деплоя&quot; &amp;&amp; git push" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Тестовое изменение для проверки деплоя&quot;; git push" />
+        </Execute>
       </list>
     </option>
   </component>
