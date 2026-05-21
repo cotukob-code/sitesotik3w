@@ -105,6 +105,15 @@
         <Execute>
           <option name="pattern" value="Start-Process node -ArgumentList &quot;C:/laragon/www/sitesotik/backend/server.js&quot; -WindowStyle Hidden" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir -p C:/laragon/www/sitesotik/public/images &amp;&amp; curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir C:/laragon/www/sitesotik/public/images; curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
+        </Execute>
       </list>
     </option>
   </component>
