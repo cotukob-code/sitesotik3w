@@ -766,7 +766,7 @@
         <div class='hub-brand-text-sub'>центральный хаб проекта</div>
       </div>
     </div>
-    <div class='hub-tag'> управления проектами</div>
+    <div class='hub-tag'>управление проектами</div>
   </div>
 
   <div class='hub-center'>
@@ -786,7 +786,7 @@
             <div class='hub-window-label'>проект</div>
             <div class='hub-window-title hub-window-title--blue'>СайтСотика</div>
           </div>
-          <div class='hub-window-badge'></div>
+          <div class='hub-window-badge'>активен</div>
         </div>
 
         <div class='hub-window-body' style="padding:0;">
@@ -796,7 +796,7 @@
         </div>
 
         <div class='hub-window-footer'>
-          <span></span>
+          <span>Кликните для входа</span>
           <span class='hub-window-arrow'></span>
         </div>
       </div>
@@ -890,7 +890,7 @@
           <div class='sitesotik-frame-sub' id='sitesotik-frame-sub'>Главная проекта</div>
         </div>
         <div class='sitesotik-frame-body'>
-          <iframe id='sitesotik-iframe' class='sitesotik-iframe' src='siteofsotik/index.html'></iframe>
+          <iframe id='sitesotik-iframe' class='sitesotik-iframe' src='./siteofsotik/1.html'></iframe>
         </div>
       </section>
     </main>
@@ -906,7 +906,7 @@
 
     const routes = {
       home:      { src: './siteofsotik/index.html',      label: 'Главная проекта' },
-      content:   { src: './siteofsotik/content.html',    label: 'Обо мне проекта' },
+      content:   { src: './siteofsotik/about.html',    label: 'Обо мне проекта' },
       games:     { src: './siteofsotik/games.html',      label: 'Игры проекта' },
       team:      { src: './siteofsotik/team.html',       label: 'Команда проекта' },
       partners:  { src: './siteofsotik/partners.html',   label: 'Партнёры проекта' }
@@ -939,6 +939,10 @@
       iframe.src = cfg.src;
       frameSub.textContent = cfg.label;
       setActiveNav(page);
+      // При смене страницы в iframe, скрываем хаб
+      iframe.onload = () => {
+        hubShell.classList.add('hub-shell--hidden');
+      };
     }
 
     document.querySelectorAll('.sitesotik-nav-btn').forEach(btn => {
@@ -951,6 +955,14 @@
     burger.addEventListener('click', () => {
       burger.classList.toggle('sitesotik-burger--open');
       nav.classList.toggle('sitesotik-nav--mobile-open');
+    });
+
+    // Закрытие мобильного меню при клике на кнопку навигации
+    document.querySelectorAll('.sitesotik-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        burger.classList.remove('sitesotik-burger--open');
+        nav.classList.remove('sitesotik-nav--mobile-open');
+      });
     });
   </script>
 

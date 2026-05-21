@@ -132,6 +132,9 @@
         <Execute>
           <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Исправление подключения Supabase и удаление chat.js&quot; &amp;&amp; git push" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Исправление подключения Supabase и удаление chat.js&quot;; git push" />
+        </Execute>
       </list>
     </option>
   </component>
