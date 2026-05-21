@@ -78,6 +78,33 @@
         <Execute>
           <option name="pattern" value="git commit -m &quot;feat(chat): подключить чат к онлайн-серверу&quot;" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/backend/messages.json" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/chat.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="node C:/laragon/www/sitesotik/backend/server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl http://localhost:3001/messages" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Process -Name node -ErrorAction SilentlyContinue" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/backend/server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="curl -X POST http://localhost:3001/send-message -H &quot;Content-Type: application/json&quot; -d &quot;{\&quot;name\&quot;:\&quot;Test\&quot;,\&quot;message\&quot;:\&quot;Test message\&quot;}&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="node C:/laragon/www/sitesotik/backend/server.js &amp;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Start-Process node -ArgumentList &quot;C:/laragon/www/sitesotik/backend/server.js&quot; -WindowStyle Hidden" />
+        </Execute>
       </list>
     </option>
   </component>
