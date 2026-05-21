@@ -120,6 +120,15 @@
         <Execute>
           <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Тестовое изменение для проверки деплоя&quot;; git push" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="rm C:/laragon/www/sitesotik/public/chat.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Удаление дублирующего chat.js и очистка index.html&quot; &amp;&amp; git push" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Удаление дублирующего chat.js и очистка index.html&quot;; git push" />
+        </Execute>
       </list>
     </option>
   </component>
