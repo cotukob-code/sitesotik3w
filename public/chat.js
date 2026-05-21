@@ -1,4 +1,5 @@
 // УНИВЕРСАЛЬНЫЙ API: локал → localhost:3001, прод → Render
+// Тестовое изменение для проверки деплоя
 const isLocal =
     location.hostname === "localhost" ||
     location.hostname === "127.0.0.1" ||
