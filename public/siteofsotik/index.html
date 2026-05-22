@@ -19,448 +19,467 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
 
-/* --- ОСНОВНЫЕ ИСПРАВЛЕНИЯ --- */
-html,body{
-    height:100%;
-    overflow:auto; /* было hidden — ломало чат */
-    background:#020617;
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    color:#e5e7eb;
-}
+        /* --- ОСНОВНЫЕ --- */
+        html,body{
+            height:100%;
+            overflow:auto;
+            background:#020617;
+            font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+            color:#e5e7eb;
+        }
 
-.layout{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    height:auto; /* было 100vh — ломало пропорции */
-    min-height:100vh;
-    padding:10px;
-}
+        .layout{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+            height:auto;
+            min-height:120vh;
+            padding:10px;
+        }
 
-/* --- ПЛЕЕР --- */
-.player-wrap{
-    border-radius:16px;
-    border:1px solid rgba(148,163,184,.4);
-    background:#0f172a;
-    box-shadow:0 20px 60px rgba(0,0,0,.8);
-    overflow:hidden;
+        /* --- ПЛЕЕР --- */
+        .player-wrap{
+            border-radius:16px;
+            border:1px solid rgba(148,163,184,.4);
+            background:#0f172a;
+            box-shadow:0 20px 60px rgba(0,0,0,.8);
+            overflow:hidden;
 
-    /* фиксируем нормальные размеры */
-    width:100%;
-    max-width:1280px; /* стандарт 720p */
-    aspect-ratio:16/9; /* правильная пропорция */
-    margin:0 auto;
-}
+            width:100%;
+            max-width:1280px;
+            aspect-ratio:16/9;
+            margin:0 auto;
+        }
 
-.player-16x9{
-    position:relative;
-    width:100%;
-    height:100%; /* было padding-top — теперь контейнер сам 16:9 */
-    background:#000;
-}
+        .player-16x9{
+            position:relative;
+            width:100%;
+            height:100%;
+            background:#000;
+        }
 
-.player-16x9 iframe{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    border:0;
-}
+        .player-16x9 iframe{
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+            border:0;
+        }
 
-/* --- ЧАТ --- */
-.chat-shell{
-    border-radius:16px;
-    border:1px solid rgba(148,163,184,.4);
-    background:#0f172a;
-    box-shadow:0 20px 60px rgba(0,0,0,.8);
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-}
+        /* --- ЧАТ --- */
+        /* УМЕНЬШЕНО НА 30% */
+        .chat-shell{
+            border-radius:16px;
+            border:1px solid rgba(148,163,184,.4);
+            background:#0f172a;
+            box-shadow:0 20px 60px rgba(0,0,0,.8);
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
 
-.chat-header-main{
-    padding:8px 12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:1px solid rgba(148,163,184,.4);
-    background:rgba(15,23,42,.96);
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-}
+            min-height:250px; /* было 360px → уменьшено на 30% */
+        }
 
-.donate-stats{
-    font-size:11px;
-}
-.donate-stats span{
-    color:#facc15;
-    font-weight:600;
-}
+        .chat-header-main{
+            padding:8px 12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid rgba(148,163,184,.4);
+            background:rgba(15,23,42,.96);
+            font-size:13px;
+            font-weight:700;
+            letter-spacing:.12em;
+            text-transform:uppercase;
+        }
 
-#chat-panel{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    position:relative;
-}
+        .donate-stats{
+            font-size:11px;
+        }
+        .donate-stats span{
+            color:#facc15;
+            font-weight:600;
+        }
 
-.chat-header-bar{
-    height:22px;
-    border-bottom:1px solid #111827;
-    display:flex;
-    align-items:center;
-    padding:0 8px;
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    color:#9ca3af;
-}
+        #chat-panel{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            position:relative;
+        }
 
-#chat-body{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    overflow:auto; /* было hidden — ломало прокрутку */
-}
+        .chat-header-bar{
+            height:22px;
+            border-bottom:1px solid #111827;
+            display:flex;
+            align-items:center;
+            padding:0 8px;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            color:#9ca3af;
+        }
 
-#chat-messages{
-    flex:1; /* было 0.5 — ломало высоту */
-    padding:10px;
-    overflow-y:auto;
-}
+        /* одна прокрутка */
+        #chat-body{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
 
-.msg{
-    margin-bottom:3px;
-    padding:2px 3px;
-    border-radius:3px;
-    background:rgba(15,23,42,.9);
-    border:1px solid #111827;
-}
-.msg.donate{
-    background:radial-gradient(circle at top left,rgba(251,191,36,.25),rgba(15,23,42,.98));
-    border-color:rgba(250,204,21,.9);
-}
-.msg .meta{
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:.14em;
-    color:#9ca3af;
-    margin-bottom:2px;
-}
-.msg.donate .meta{
-    color:#facc15;
-}
-.msg .text{
-    font-size:13px;
-    color:#e5e7eb;
-}
+        #chat-messages{
+            flex:1;
+            padding:10px;
+            overflow-y:auto;
 
-/* --- ВВОД --- */
-#chat-input{
-    border-top:1px solid #111827;
-    background:#020617;
-    padding:8px;
-    display:grid;
-    grid-template-columns:1fr 1fr; /* было 1fr 2fr — ломало сетку */
-    gap:6px;
-}
+            scrollbar-width:thin;
+            scrollbar-color:#334155 #0f172a;
+        }
+        #chat-messages::-webkit-scrollbar{
+            width:8px;
+        }
+        #chat-messages::-webkit-scrollbar-track{
+            background:#0f172a;
+        }
+        #chat-messages::-webkit-scrollbar-thumb{
+            background:#334155;
+            border-radius:8px;
+        }
+        #chat-messages::-webkit-scrollbar-thumb:hover{
+            background:#475569;
+        }
 
-.chat-input-left{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
+        .msg{
+            margin-bottom:3px;
+            padding:2px 3px;
+            border-radius:3px;
+            background:rgba(15,23,42,.9);
+            border:1px solid #111827;
+        }
+        .msg.donate{
+            background:radial-gradient(circle at top left,rgba(251,191,36,.25),rgba(15,23,42,.98));
+            border-color:rgba(250,204,21,.9);
+        }
+        .msg .meta{
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.14em;
+            color:#9ca3af;
+            margin-bottom:2px;
+        }
+        .msg.donate .meta{
+            color:#facc15;
+        }
+        .msg .text{
+            font-size:13px;
+            color:#e5e7eb;
+        }
 
-#chat-name,#chat-surname{
-    border-radius:6px;
-    border:1px solid #1f2937;
-    background:#020617;
-    color:#e5e7eb;
-    padding:4px 6px;
-    font-size:12px;
-    outline:none;
-}
+        /* --- ВВОД --- */
+        #chat-input{
+            border-top:1px solid #111827;
+            background:#020617;
+            padding:8px;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:6px;
+        }
 
-#chat-msg{
-    border-radius:6px;
-    border:1px solid #1f2937;
-    background:#020617;
-    color:#e5e7eb;
-    padding:5px 7px;
-    font-size:12px;
-    outline:none;
-    resize:none;
-    min-height:22px;
-}
+        .chat-input-left{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
 
-.chat-actions{
-    grid-column:1/3;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    margin-top:8px;
-}
+        #chat-name,#chat-surname{
+            border-radius:6px;
+            border:1px solid #1f2937;
+            background:#020617;
+            color:#e5e7eb;
+            padding:4px 6px;
+            font-size:12px;
+            outline:none;
+        }
 
-/* --- ДОНАТЫ --- */
-.donate-switch{
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:.14em;
-    color:#9ca3af;
-    cursor:pointer;
-}
-.donate-switch input{
-    width:14px;
-    height:14px;
-    border-radius:4px;
-    border:1px solid #9ca3af;
-    background:#020617;
-    appearance:none;
-    position:relative;
-}
-.donate-switch input:checked{
-    background:#f97316;
-    border-color:#fed7aa;
-}
-.donate-switch input:checked::after{
-    content:"";
-    position:absolute;
-    inset:2px;
-    border-radius:2px;
-    background:#fffbeb;
-}
+        #chat-msg{
+            border-radius:6px;
+            border:1px solid #1f2937;
+            background:#020617;
+            color:#e5e7eb;
+            padding:5px 7px;
+            font-size:12px;
+            outline:none;
+            resize:none;
+            min-height:22px;
+        }
 
-#chat-send{
-    padding:6px 14px;
-    border-radius:999px;
-    border:none;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#ecfdf5;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.15em;
-    cursor:pointer;
-    box-shadow:0 8px 20px rgba(22,163,74,.7);
-    min-height:32px;
-}
+        .chat-actions{
+            grid-column:1/3;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:8px;
+            margin-top:8px;
+        }
 
-.donate-step{
-    position:absolute;
-    inset:0;
-    background:rgba(15,23,42,.98);
-    display:none;
-    flex-direction:column;
-    padding:12px;
-    z-index:50;
-}
+        /* --- ДОНАТЫ --- */
+        .donate-switch{
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.14em;
+            color:#9ca3af;
+            cursor:pointer;
+        }
+        .donate-switch input{
+            width:14px;
+            height:14px;
+            border-radius:4px;
+            border:1px solid #9ca3af;
+            background:#020617;
+            appearance:none;
+            position:relative;
+        }
+        .donate-switch input:checked{
+            background:#f97316;
+            border-color:#fed7aa;
+        }
+        .donate-switch input:checked::after{
+            content:"";
+            position:absolute;
+            inset:2px;
+            border-radius:2px;
+            background:#fffbeb;
+        }
 
-.donate-step-header{
-    font-size:13px;
-    font-weight:600;
-    margin-bottom:4px;
-}
-.donate-step-sub{
-    font-size:11px;
-    color:#9ca3af;
-    margin-bottom:10px;
-}
+        #chat-send{
+            padding:6px 14px;
+            border-radius:999px;
+            border:none;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#ecfdf5;
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:.15em;
+            cursor:pointer;
+            box-shadow:0 8px 20px rgba(22,163,74,.7);
+            min-height:32px;
+        }
 
-/* --- БАНКИ --- */
-.bank-options{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-}
-.bank-card{
-    flex:1 1 100px; /* было calc — ломало сетку */
-    max-width:120px;
-    background:#1e293b;
-    border:1px solid #334155;
-    border-radius:10px;
-    padding:8px 6px;
-    text-align:center;
-    cursor:pointer;
-    transition:.2s;
-}
-.bank-card:hover{
-    background:#334155;
-}
-.bank-card img{
-    width:100%;
-    height:50px;
-    object-fit:contain;
-    background:#fff;
-    border-radius:8px;
-    margin-bottom:4px;
-}
-.bank-card h3{
-    font-size:11px;
-    margin-bottom:2px;
-}
-.bank-card p{
-    font-size:10px;
-    color:#9ca3af;
-    margin-bottom:2px;
-}
-.bank-card span{
-    font-size:10px;
-    color:#f97316;
-}
+        .donate-step{
+            position:absolute;
+            inset:0;
+            background:rgba(15,23,42,.98);
+            display:none;
+            flex-direction:column;
+            padding:12px;
+            z-index:50;
+        }
 
-/* --- ЮМАНИ --- */
-.ym-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-}
-.ym-btn{
-    all:unset;
-    background:#1e293b;
-    border:1px solid #334155;
-    border-radius:10px;
-    padding:10px 6px;
-    text-align:center;
-    font-size:12px;
-    color:#38bdf8;
-    cursor:pointer;
-}
-.ym-btn:hover{
-    background:#334155;
-}
-.ym-btn.other{
-    background:#f97316;
-    border:none;
-    color:#fff;
-}
+        .donate-step-header{
+            font-size:13px;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+        .donate-step-sub{
+            font-size:11px;
+            color:#9ca3af;
+            margin-bottom:10px;
+        }
 
-.ym-custom-wrap{
-    margin-top:10px;
-    display:none;
-}
-.ym-custom-inner{
-    display:flex;
-    justify-content:center;
-    gap:6px;
-}
-#ym-custom-input{
-    width:100%;
-    max-width:140px;
-    padding:6px 8px;
-    border-radius:8px;
-    border:1px solid #334155;
-    background:#020617;
-    color:#e5e7eb;
-    font-size:12px;
-    text-align:center;
-}
-#ym-custom-go{
-    padding:6px 12px;
-    border-radius:8px;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#fff;
-    font-size:12px;
-    border:none;
-    cursor:pointer;
-}
+        /* --- БАНКИ --- */
+        .bank-options{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .bank-card{
+            flex:1 1 100px;
+            max-width:120px;
+            background:#1e293b;
+            border:1px solid #334155;
+            border-radius:10px;
+            padding:8px 6px;
+            text-align:center;
+            cursor:pointer;
+            transition:.2s;
+        }
+        .bank-card:hover{
+            background:#334155;
+        }
+        .bank-card img{
+            width:100%;
+            height:50px;
+            object-fit:contain;
+            background:#fff;
+            border-radius:8px;
+            margin-bottom:4px;
+        }
+        .bank-card h3{
+            font-size:11px;
+            margin-bottom:2px;
+        }
+        .bank-card p{
+            font-size:10px;
+            color:#9ca3af;
+            margin-bottom:2px;
+        }
+        .bank-card span{
+            font-size:10px;
+            color:#f97316;
+        }
 
-/* --- QR --- */
-.qr-wrap{
-    margin-top:10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-}
-.qr-wrap a{
-    display:inline-block;
-    border-radius:12px;
-    overflow:hidden;
-    border:1px solid #1f2937;
-    background:#020617;
-}
-.qr-wrap img{
-    display:block;
-    width:100%;
-    max-width:220px;
-    height:auto; /* было фиксированное — ломало */
-}
+        /* --- ЮМАНИ --- */
+        .ym-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:8px;
+        }
+        .ym-btn{
+            all:unset;
+            background:#1e293b;
+            border:1px solid #334155;
+            border-radius:10px;
+            padding:10px 6px;
+            text-align:center;
+            font-size:12px;
+            color:#38bdf8;
+            cursor:pointer;
+        }
+        .ym-btn:hover{
+            background:#334155;
+        }
+        .ym-btn.other{
+            background:#f97316;
+            border:none;
+            color:#fff;
+        }
 
-.qr-buttons{
-    display:flex;
-    gap:8px;
-    margin-top:4px;
-}
-.qr-btn{
-    padding:6px 12px;
-    border-radius:999px;
-    border:none;
-    font-size:11px;
-    cursor:pointer;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-}
-.qr-btn-ok{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#ecfdf5;
-}
-.qr-btn-cancel{
-    background:#111827;
-    color:#e5e7eb;
-    border:1px solid #374151;
-}
+        .ym-custom-wrap{
+            margin-top:10px;
+            display:none;
+        }
+        .ym-custom-inner{
+            display:flex;
+            justify-content:center;
+            gap:6px;
+        }
+        #ym-custom-input{
+            width:100%;
+            max-width:140px;
+            padding:6px 8px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#020617;
+            color:#e5e7eb;
+            font-size:12px;
+            text-align:center;
+        }
+        #ym-custom-go{
+            padding:6px 12px;
+            border-radius:8px;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#fff;
+            font-size:12px;
+            border:none;
+            cursor:pointer;
+        }
 
-/* --- ВВОД СУММЫ --- */
-.manual-sum-wrap{
-    margin-top:10px;
-}
-.manual-sum-inner{
-    display:flex;
-    justify-content:center;
-    gap:6px;
-}
-#manual-sum-input{
-    width:100%;
-    max-width:160px;
-    padding:6px 8px;
-    border-radius:8px;
-    border:1px solid #334155;
-    background:#020617;
-    color:#e5e7eb;
-    font-size:12px;
-    text-align:center;
-}
-#manual-sum-ok{
-    padding:6px 12px;
-    border-radius:8px;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#fff;
-    font-size:12px;
-    border:none;
-    cursor:pointer;
-}
-#manual-sum-cancel{
-    margin-top:8px;
-    padding:6px 12px;
-    border-radius:999px;
-    background:#111827;
-    color:#e5e7eb;
-    border:1px solid #374151;
-    font-size:11px;
-    cursor:pointer;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-}
+        /* --- QR --- */
+        .qr-wrap{
+            margin-top:10px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:8px;
+        }
+        .qr-wrap a{
+            display:inline-block;
+            border-radius:12px;
+            overflow:hidden;
+            border:1px solid #1f2937;
+            background:#020617;
+        }
+        .qr-wrap img{
+            display:block;
+            width:100%;
+            max-width:220px;
+            height:auto;
+        }
 
+        .qr-buttons{
+            display:flex;
+            gap:8px;
+            margin-top:4px;
+        }
+        .qr-btn{
+            padding:6px 12px;
+            border-radius:999px;
+            border:none;
+            font-size:11px;
+            cursor:pointer;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+        }
+        .qr-btn-ok{
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#ecfdf5;
+        }
+        .qr-btn-cancel{
+            background:#111827;
+            color:#e5e7eb;
+            border:1px solid #374151;
+        }
+
+        /* --- ВВОД СУММЫ --- */
+        .manual-sum-wrap{
+            margin-top:10px;
+        }
+        .manual-sum-inner{
+            display:flex;
+            justify-content:center;
+            gap:6px;
+        }
+        #manual-sum-input{
+            width:100%;
+            max-width:160px;
+            padding:6px 8px;
+            border-radius:8px;
+            border:1px solid #334155;
+            background:#020617;
+            color:#e5e7eb;
+            font-size:12px;
+            text-align:center;
+        }
+        #manual-sum-ok{
+            padding:6px 12px;
+            border-radius:8px;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            color:#fff;
+            font-size:12px;
+            border:none;
+            cursor:pointer;
+        }
+        #manual-sum-cancel{
+            margin-top:8px;
+            padding:6px 12px;
+            border-radius:999px;
+            background:#111827;
+            color:#e5e7eb;
+            border:1px solid #374151;
+            font-size:11px;
+            cursor:pointer;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            display:block;
+            margin-left:auto;
+            margin-right:auto;
+        }
     </style>
+
 </head>
 <body>
     <h1>СайтСотика — Поддержка проекта и чат</h1>
