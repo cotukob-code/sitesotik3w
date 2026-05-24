@@ -231,6 +231,18 @@
         <Execute>
           <option name="pattern" value="vercel --prod --yes" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel deploy --prod" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel deploy --prod" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot; &amp;&amp; vercel logs https://sitesotik.vercel.app" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel logs https://sitesotik.vercel.app" />
+        </Execute>
       </list>
     </option>
   </component>

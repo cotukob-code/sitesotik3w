@@ -16,147 +16,272 @@
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
                              <script>
-                             const SUPABASE_URL = "https://xdohisilunbnfqbuglwi.supabase.co";
-                             const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ";
+                             document.addEventListener('DOMContentLoaded', async () => {
+                                 const SUPABASE_URL = "https://xdohisilunbnfqbuglwi.supabase.co";
+                                 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ";
                              
-                             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                                 // Проверка загрузки Supabase
+                                 if (typeof supabase === 'undefined') {
+                                     console.error("Supabase не загрузился! Проверь CDN.");
+                                     alert("Ошибка: Supabase не загрузился. Проверь подключение.");
+                                     throw new Error("Supabase not loaded");
+                                 }
                              
-                             const chatMessages = document.getElementById("chat-messages");
-                             const nameInput = document.getElementById("chat-name");
-                             const surnameInput = document.getElementById("chat-surname");
-                             const msgInput = document.getElementById("chat-msg");
-                             const sendBtn = document.getElementById("chat-send");
-                             const donateToggle = document.getElementById("donate-toggle");
+                                 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                              
-                             // Элементы статистики
-                             const donateTotalSum = document.getElementById("donate-total-sum");
-                             const donateTotalCount = document.getElementById("donate-total-count");
+                                 // Теперь DOM загружен — можно искать элементы
+                                 const chatMessages = document.getElementById("chat-messages");
+                                 const nameInput = document.getElementById("chat-name");
+                                 const surnameInput = document.getElementById("chat-surname");
+                                 const msgInput = document.getElementById("chat-msg");
+                                 const sendBtn = document.getElementById("chat-send");
+                                 const donateToggle = document.getElementById("donate-toggle");
                              
-                             // -------------------------
-                             // Добавление сообщения в DOM
-                             // -------------------------
-                             function addMessage(msg) {
-                                 const div = document.createElement("div");
-                                 div.className = "msg" + (msg.donate ? " donate" : "");
-                                 div.innerHTML = `
-                                     <div class="meta">${msg.name} ${msg.surname}</div>
-                                     <div class="text">${msg.text}</div>
-                                 `;
-                                 chatMessages.appendChild(div);
-                                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                             }
+                                 const donateTotalSum = document.getElementById("donate-total-sum");
+                                 const donateTotalCount = document.getElementById("donate-total-count");
                              
-                             // -------------------------
-                             // 1) Загрузка истории
-                             // -------------------------
-                             async function loadMessages() {
-                                 try {
-                                     const { data, error } = await supabaseClient
-                                         .from("messages")
-                                         .select("*")
-                                         .order("id", { ascending: true });
+                                 // -------------------------
+                                 // Добавление сообщения
+                                 // -------------------------
+                                 function addMessage(msg) {
+                                     const div = document.createElement("div");
+                                     div.className = "msg" + (msg.donate ? " donate" : "");
+                                     div.innerHTML = `
+                                         <div class="meta">${msg.name} ${msg.surname}</div>
+                                         <div class="text">${msg.text}</div>
+                                     `;
+                                     chatMessages.appendChild(div);
+                                     chatMessages.scrollTop = chatMessages.scrollHeight;
+                                 }
                              
-                                     if (error) {
-                                         console.error("Ошибка загрузки:", error);
+                                 // -------------------------
+                                 // Загрузка сообщений
+                                 // -------------------------
+                                 async function loadMessages() {
+                                     try {
+                                         const { data, error } = await supabaseClient
+                                             .from("messages")
+                                             .select("*")
+                                             .order("id", { ascending: true });
+                             
+                                         if (error) {
+                                             console.error("Ошибка загрузки:", error);
+                                             return;
+                                         }
+                             
+                                         chatMessages.innerHTML = "";
+                                         data.forEach(addMessage);
+                                         updateDonationStats();
+                                     } catch (err) {
+                                         console.error("Ошибка при загрузке:", err);
+                                     }
+                                 }
+                             
+                                 // -------------------------
+                                 // Статистика донатов
+                                 // -------------------------
+                                 async function updateDonationStats() {
+                                     try {
+                                         const { data, error } = await supabaseClient
+                                             .from("messages")
+                                             .select("donate, text")
+                                             .eq("donate", true);
+                             
+                                         if (error) {
+                                             console.error("Ошибка статистики:", error);
+                                             return;
+                                         }
+                             
+                                         const totalDonations = data.length;
+                                         const totalSum = data.reduce((sum, msg) => {
+                                             const amount = parseInt(msg.text.match(/\d+/)?.[0]) || 0;
+                                             return sum + amount;
+                                         }, 0);
+                             
+                                         donateTotalSum.textContent = `${totalSum} ₽`;
+                                         donateTotalCount.textContent = totalDonations;
+                                     } catch (err) {
+                                         console.error("Ошибка статистики:", err);
+                                     }
+                                 }
+                             
+                                 // -------------------------
+                                 // Realtime
+                                 // -------------------------
+                                 supabaseClient
+                                     .channel("messages-realtime")
+                                     .on(
+                                         "postgres_changes",
+                                         { event: "INSERT", schema: "public", table: "messages" },
+                                         (payload) => {
+                                             addMessage(payload.new);
+                                             if (payload.new.donate) {
+                                                 updateDonationStats();
+                                             }
+                                         }
+                                     )
+                                     .subscribe();
+                             
+                                 // -------------------------
+                                 // Отправка
+                                 // -------------------------
+                                 sendBtn.onclick = async () => {
+                                     console.log('Кнопка отправки нажата'); // Отладочная печать
+                                     const name = nameInput.value.trim();
+                                     const surname = surnameInput.value.trim();
+                                     const text = msgInput.value.trim();
+                                     const donate = donateToggle.checked;
+                             
+                                     if (!name || !surname || !text) {
+                                         alert("Заполните все поля!");
                                          return;
                                      }
                              
-                                     chatMessages.innerHTML = "";
-                                     data.forEach(addMessage);
-                                     updateDonationStats(); // Обновляем статистику после загрузки
-                                 } catch (err) {
-                                     console.error("Ошибка при загрузке сообщений:", err);
-                                 }
-                             }
-                             
-                             // -------------------------
-                             // Загрузка статистики по донатам
-                             // -------------------------
-                             async function updateDonationStats() {
-                                 try {
-                                     const { data, error } = await supabaseClient
-                                         .from("messages")
-                                         .select("donate, text")
-                                         .eq("donate", true);
-                             
-                                     if (error) {
-                                         console.error("Ошибка загрузки статистики:", error);
+                                     if (name.length > 20 || surname.length > 20 || text.length > 200) {
+                                         alert("Слишком длинные данные!");
                                          return;
                                      }
                              
-                                     const totalDonations = data.length;
-                                     const totalSum = data.reduce((sum, msg) => {
-                                         const amount = parseInt(msg.text.match(/\d+/)?.[0]) || 0;
-                                         return sum + amount;
-                                     }, 0);
+                                     const { error } = await supabaseClient.from("messages").insert([
+                                         { name, surname, text, donate }
+                                     ]);
                              
-                                     donateTotalSum.textContent = `${totalSum} ₽`;
-                                     donateTotalCount.textContent = totalDonations;
-                                 } catch (err) {
-                                     console.error("Ошибка при обновлении статистики:", err);
-                                 }
-                             }
-                             
-                             // Загружаем сообщения и статистику после загрузки DOM
-                             document.addEventListener('DOMContentLoaded', () => {
-                                 loadMessages();
-                                 updateDonationStats();
-                             });
-                             
-                             // -------------------------
-                             // 2) Realtime подписка
-                             // -------------------------
-                             supabaseClient
-                               .channel("messages-realtime")
-                               .on(
-                                 "postgres_changes",
-                                 { event: "INSERT", schema: "public", table: "messages" },
-                                 (payload) => {
-                                     addMessage(payload.new);
-                                     if (payload.new.donate) {
-                                         updateDonationStats(); // Обновляем статистику при новом донате
+                                     if (error) {
+                                         console.error("Ошибка отправки:", error);
+                                         alert("Ошибка: " + (error.message || "Неизвестная ошибка"));
+                                         return;
                                      }
-                                 }
-                               )
-                               .subscribe();
                              
-                             // -------------------------
-                             // 3) Отправка сообщения
-                             // -------------------------
-                             sendBtn.onclick = async () => {
-                                 const name = nameInput.value.trim();
-                                 const surname = surnameInput.value.trim();
-                                 const text = msgInput.value.trim();
-                                 const donate = donateToggle.checked;
+                                     msgInput.value = "";
+                                     if (donate) {
+                                         updateDonationStats();
+                                     }
+                                 };
                              
-                                 if (!name || !surname || !text) {
-                                     alert("Заполните все поля!");
-                                     return;
-                                 }
-                             
-                                 if (name.length > 20 || surname.length > 20 || text.length > 200) {
-                                     alert("Слишком длинные данные!");
-                                     return;
-                                 }
-                             
-                                 const { error } = await supabaseClient.from("messages").insert({
-                                     name,
-                                     surname,
-                                     text,
-                                     donate
+                                 // --- Инициализация донатов уже выполнена выше ---
+                                 
+                                 // Показать шаг выбора банка при включении доната
+                                 donateToggle.addEventListener("change", () => {
+                                     if (donateToggle.checked) {
+                                         stepBank.style.display = "flex";
+                                     } else {
+                                         stepBank.style.display = "none";
+                                         // Сброс всех шагов
+                                         [stepYoomoney, stepSbp, stepTinkoff, stepSber, stepVtb, stepOther].forEach(step => {
+                                             step.style.display = "none";
+                                         });
+                                         ymCustomWrap.style.display = "none";
+                                         manualSumWrap.style.display = "none";
+                                     }
                                  });
-                             
-                                 if (error) {
-                                     console.error("Ошибка отправки:", error);
-                                     alert("Не удалось отправить сообщение. Попробуйте позже.");
-                                     return;
-                                 }
-                             
-                                 msgInput.value = "";
-                                 if (donate) {
-                                     updateDonationStats(); // Обновляем сразу, если это донат
-                                 }
-                             };
+                                 
+                                 // Обработчики для карточек банков
+                                 document.querySelectorAll(".bank-card").forEach(card => {
+                                     card.addEventListener("click", () => {
+                                         const bank = card.dataset.bank;
+                                         stepBank.style.display = "none";
+                                         
+                                         if (bank === "yoomoney") {
+                                             stepYoomoney.style.display = "flex";
+                                         } else if (bank === "sbp") {
+                                             stepSbp.style.display = "flex";
+                                         } else if (bank === "tinkoff") {
+                                             stepTinkoff.style.display = "flex";
+                                         } else if (bank === "sber") {
+                                             stepSber.style.display = "flex";
+                                         } else if (bank === "vtb") {
+                                             stepVtb.style.display = "flex";
+                                         } else if (bank === "other") {
+                                             stepOther.style.display = "flex";
+                                         }
+                                     });
+                                 });
+                                 
+                                 // Обработчики для кнопок "Оплатил" и "Отмена"
+                                 document.querySelectorAll(".qr-btn-ok").forEach(btn => {
+                                     btn.addEventListener("click", () => {
+                                         const bank = btn.dataset.bank;
+                                         // Здесь можно добавить логику для подтверждения оплаты
+                                         alert(`Оплата через ${bank} подтверждена!`);
+                                         // Скрыть все шаги
+                                         [stepBank, stepYoomoney, stepSbp, stepTinkoff, stepSber, stepVtb, stepOther].forEach(step => {
+                                             step.style.display = "none";
+                                         });
+                                         ymCustomWrap.style.display = "none";
+                                         manualSumWrap.style.display = "none";
+                                         donateToggle.checked = false; // Сбросить чекбокс
+                                     });
+                                 });
+                                 
+                                 document.querySelectorAll(".qr-btn-cancel, #manual-sum-cancel").forEach(btn => {
+                                     btn.addEventListener("click", () => {
+                                         // Вернуться к выбору банка или скрыть все
+                                         if (btn.id === "manual-sum-cancel") {
+                                             stepOther.style.display = "none";
+                                             manualSumWrap.style.display = "none";
+                                             stepBank.style.display = "flex";
+                                         } else {
+                                             const step = btn.closest(".donate-step");
+                                             step.style.display = "none";
+                                             stepBank.style.display = "flex";
+                                         }
+                                     });
+                                 });
+                                 
+                                 // Обработчики для кнопок ЮMoney
+                                 document.querySelectorAll("#step-yoomoney .ym-btn").forEach(btn => {
+                                     btn.addEventListener("click", () => {
+                                         const sum = btn.dataset.sum;
+                                         if (sum === "custom") {
+                                             ymCustomWrap.style.display = "flex";
+                                         } else {
+                                             // Здесь можно добавить логику для отправки доната с суммой
+                                             alert(`Донат ${sum} ₽ через ЮMoney!`);
+                                             // Скрыть все шаги
+                                             [stepBank, stepYoomoney, stepSbp, stepTinkoff, stepSber, stepVtb, stepOther].forEach(step => {
+                                                 step.style.display = "none";
+                                             });
+                                             ymCustomWrap.style.display = "none";
+                                             manualSumWrap.style.display = "none";
+                                             donateToggle.checked = false;
+                                         }
+                                     });
+                                 });
+                                 
+                                 // Кнопка "Далее" для кастомной суммы ЮMoney
+                                 document.getElementById("ym-custom-go").addEventListener("click", () => {
+                                     const sum = document.getElementById("ym-custom-input").value;
+                                     if (sum) {
+                                         alert(`Донат ${sum} ₽ через ЮMoney!`);
+                                         // Скрыть все шаги
+                                         [stepBank, stepYoomoney, stepSbp, stepTinkoff, stepSber, stepVtb, stepOther].forEach(step => {
+                                             step.style.display = "none";
+                                         });
+                                         ymCustomWrap.style.display = "none";
+                                         manualSumWrap.style.display = "none";
+                                         donateToggle.checked = false;
+                                     }
+                                 });
+                                 
+                                 // Кнопка "Подтвердить" для другой суммы
+                                 document.getElementById("manual-sum-ok").addEventListener("click", () => {
+                                     const sum = document.getElementById("manual-sum-input").value;
+                                     if (sum) {
+                                         alert(`Донат ${sum} ₽!`);
+                                         // Скрыть все шаги
+                                         [stepBank, stepYoomoney, stepSbp, stepTinkoff, stepSber, stepVtb, stepOther].forEach(step => {
+                                             step.style.display = "none";
+                                         });
+                                         ymCustomWrap.style.display = "none";
+                                         manualSumWrap.style.display = "none";
+                                         donateToggle.checked = false;
+                                     }
+                                 });
+                                 
+                                 // Запуск
+                                 await loadMessages();
+                                 await updateDonationStats();
+                             });
                              </script>
 
     <style>
@@ -660,7 +785,7 @@
         <div class="player-wrap">
             <div class="player-16x9">
                 <iframe
-                    src="https://player.twitch.tv/?channel=fsbsotik&parent=localhost&parent=xn--80aaxdgwscic.xn--p1ai&parent=www.xn--80aaxdgwscic.xn--p1ai&parent=sitesotik3w.vercel.app&autoplay=false"
+                    src="https://player.twitch.tv/?channel=fsbsotik&parent=localhost&parent=xn--80aaxdgwscic.xn--p1ai&parent=www.xn--80aaxdgwscic.xn--p1ai&parent=sitesotik3w.vercel.app&parent=sitesotik.vercel.app&autoplay=false"
                     allowfullscreen>
                 </iframe>
             </div>
@@ -701,32 +826,32 @@
                     <div class="donate-step-sub">Поддержите проект любым удобным способом</div>
                     <div class="bank-options">
                         <div class="bank-card" data-bank="yoomoney">
-                            <img src="/public/images/yoomoney.png" alt="ЮMoney">
+                            <img src="/images/yoomoney.png" alt="ЮMoney">
                             <h3>ЮMoney</h3>
                             <p>Быстро и без комиссии</p>
                         </div>
                                                 <div class="bank-card" data-bank="sbp">
-                            <img src="/public/images/sbp.png" alt="СБП">
+                            <img src="/images/sbp.png" alt="СБП">
                             <h3>СБП</h3>
                             <p>Перевод с карты на карту</p>
                         </div>
                         <div class="bank-card" data-bank="tinkoff">
-                            <img src="/public/images/tinkoff.png" alt="Тинькофф">
+                            <img src="/images/tinkoff.png" alt="Тинькофф">
                             <h3>Тинькофф</h3>
                             <p>Карта или СБП</p>
                         </div>
                         <div class="bank-card" data-bank="sber">
-                            <img src="/public/images/sber.png" alt="Сбер">
+                            <img src="/images/sber.png" alt="Сбер">
                             <h3>Сбер</h3>
                             <p>Карта или СБП</p>
                         </div>
                         <div class="bank-card" data-bank="vtb">
-                            <img src="/public/images/vtb.png" alt="ВТБ">
+                            <img src="/images/vtb.png" alt="ВТБ">
                             <h3>ВТБ</h3>
                             <p>Карта или СБП</p>
                         </div>
                         <div class="bank-card" data-bank="other">
-                            <img src="/public/images/other.png" alt="Другое">
+                            <img src="/images/other.png" alt="Другое">
                             <h3>Другое</h3>
                             <p>Указать сумму вручную</p>
                         </div>
@@ -756,8 +881,8 @@
                     <div class="donate-step-header">СБП</div>
                     <div class="donate-step-sub">Отсканируйте QR-код</div>
                     <div class="qr-wrap">
-                        <a href="/public/images/sbp-qr.jpg" target="_blank">
-                            <img src="/public/images/sbp-qr.jpg" alt="QR-код СБП">
+                        <a href="/images/sbp-qr.jpg" target="_blank">
+                            <img src="/images/sbp-qr.jpg" alt="QR-код СБП">
                         </a>
                         <div class="qr-buttons">
                             <button class="qr-btn qr-btn-ok" data-bank="sbp">Оплатил</button>
@@ -770,8 +895,8 @@
                     <div class="donate-step-header">Тинькофф</div>
                     <div class="donate-step-sub">Отправьте на карту</div>
                     <div class="qr-wrap">
-                        <a href="/public/images/tinkoff-qr.jpg" target="_blank">
-                            <img src="/public/images/tinkoff-qr.jpg" alt="QR-код Тинькофф">
+                        <a href="/images/tinkoff-qr.jpg" target="_blank">
+                            <img src="/images/tinkoff-qr.jpg" alt="QR-код Тинькофф">
                         </a>
                         <div class="qr-buttons">
                             <button class="qr-btn qr-btn-ok" data-bank="tinkoff">Оплатил</button>
@@ -784,8 +909,8 @@
                     <div class="donate-step-header">Сбер</div>
                     <div class="donate-step-sub">Отправьте на карту</div>
                     <div class="qr-wrap">
-                        <a href="/public/images/sber-qr.jpg" target="_blank">
-                            <img src="/public/images/sber-qr.jpg" alt="QR-код Сбер">
+                        <a href="/images/sber-qr.jpg" target="_blank">
+                            <img src="/images/sber-qr.jpg" alt="QR-код Сбер">
                         </a>
                         <div class="qr-buttons">
                             <button class="qr-btn qr-btn-ok" data-bank="sber">Оплатил</button>
@@ -798,8 +923,8 @@
                     <div class="donate-step-header">ВТБ</div>
                     <div class="donate-step-sub">Отправьте на карту</div>
                     <div class="qr-wrap">
-                        <a href="/public/images/vtb-qr.jpg" target="_blank">
-                            <img src="/public/images/vtb-qr.jpg" alt="QR-код ВТБ">
+                        <a href="/images/vtb-qr.jpg" target="_blank">
+                            <img src="/images/vtb-qr.jpg" alt="QR-код ВТБ">
                         </a>
                         <div class="qr-buttons">
                             <button class="qr-btn qr-btn-ok" data-bank="vtb">Оплатил</button>
