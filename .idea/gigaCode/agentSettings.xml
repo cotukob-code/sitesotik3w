@@ -153,6 +153,15 @@
         <Execute>
           <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/partners.html -Raw" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git status &amp;&amp; git diff HEAD" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git status; git diff HEAD" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git push --force" />
+        </Execute>
       </list>
     </option>
   </component>
