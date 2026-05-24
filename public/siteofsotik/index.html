@@ -15,6 +15,97 @@
     <title>СайтСотика — Донат + Чат</title>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+                             <script>
+                             const SUPABASE_URL = "https://xdohisilunbnfqbuglwi.supabase.co";
+                             const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ";
+                             
+                             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                             
+                             const chatMessages = document.getElementById("chat-messages");
+                             const nameInput = document.getElementById("chat-name");
+                             const surnameInput = document.getElementById("chat-surname");
+                             const msgInput = document.getElementById("chat-msg");
+                             const sendBtn = document.getElementById("chat-send");
+                             const donateToggle = document.getElementById("donate-toggle");
+                             
+                             // -------------------------
+                             // Добавление сообщения в DOM
+                             // -------------------------
+                             function addMessage(msg) {
+                                 const div = document.createElement("div");
+                                 div.className = "msg" + (msg.donate ? " donate" : "");
+                                 div.innerHTML = `
+                                     <div class="meta">${msg.name} ${msg.surname}</div>
+                                     <div class="text">${msg.text}</div>
+                                 `;
+                                 chatMessages.appendChild(div);
+                                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                             }
+                             
+                             // -------------------------
+                             // 1) Загрузка истории
+                             // -------------------------
+                             async function loadMessages() {
+                                 try {
+                                     const { data, error } = await supabaseClient
+                                         .from("messages")
+                                         .select("*")
+                                         .order("id", { ascending: true });
+                             
+                                     if (error) {
+                                         console.error("Ошибка загрузки:", error);
+                                         return;
+                                     }
+                             
+                                     chatMessages.innerHTML = "";
+                                     data.forEach(addMessage);
+                                 } catch (err) {
+                                     console.error("Ошибка при загрузке сообщений:", err);
+                                 }
+                             }
+                             // Загружаем сообщения после полной загрузки DOM
+                             document.addEventListener('DOMContentLoaded', loadMessages);
+                             
+                             // -------------------------
+                             // 2) Realtime подписка
+                             // -------------------------
+                             supabaseClient
+                               .channel("messages-realtime")
+                               .on(
+                                 "postgres_changes",
+                                 { event: "INSERT", schema: "public", table: "messages" },
+                                 payload => {
+                                     addMessage(payload.new);
+                                 }
+                               )
+                               .subscribe();
+                             
+                             // -------------------------
+                             // 3) Отправка сообщения
+                             // -------------------------
+                             sendBtn.onclick = async () => {
+                                 const name = nameInput.value.trim();
+                                 const surname = surnameInput.value.trim();
+                                 const text = msgInput.value.trim();
+                                 const donate = donateToggle.checked;
+                             
+                                 if (!name || !surname || !text) return;
+                             
+                                 const { error } = await supabaseClient.from("messages").insert({
+                                     name,
+                                     surname,
+                                     text,
+                                     donate
+                                 });
+                             
+                                 if (error) {
+                                     console.error("Ошибка отправки:", error);
+                                     return;
+                                 }
+                             
+                                 msgInput.value = "";
+                             };
+                             </script>
 
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -680,222 +771,6 @@
         </div>
     </div>
 
-    <script>
-        // === Supabase Setup ===
-        const supabaseUrl = 'https://xdohisilunbnfqbuglwi.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ';
 
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-        // === DOM Elements ===
-        const chatMessages = document.getElementById('chat-messages');
-        const chatNameInput = document.getElementById('chat-name');
-        const chatSurnameInput = document.getElementById('chat-surname');
-        const chatMsgInput = document.getElementById('chat-msg');
-        const chatSendBtn = document.getElementById('chat-send');
-        const donateToggle = document.getElementById('donate-toggle');
-
-        // === Donate State ===
-        let pendingDonation = null;
-
-        // === Stats ===
-        const donateStats = {
-            totalSum: 0,
-            totalCount: 0
-        };
-
-        // === Update Stats ===
-        function updateStats() {
-            document.getElementById('donate-total-sum').textContent = `${donateStats.totalSum} ₽`;
-            document.getElementById('donate-total-count').textContent = donateStats.totalCount;
-        }
-
-        // === Format Surname as First Letter + Dot ===
-        function formatSurname(surname) {
-            return surname && surname.trim() ? `${surname.trim().charAt(0)}.` : '';
-        }
-
-        // === Post Message to Chat ===
-        function postToChat(data) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${data.isDonate ? 'donate' : ''}`;
-
-            const name = data.name || 'Аноним';
-            const surname = formatSurname(data.surname);
-            const author = surname ? `${name} ${surname}` : name;
-
-            const meta = document.createElement('div');
-            meta.className = 'meta';
-            meta.textContent = author;
-            if (data.isDonate && data.amount) {
-                meta.textContent += ` — Поддержал на ${data.amount} ₽`;
-            }
-
-            const text = document.createElement('div');
-            text.className = 'text';
-            text.textContent = data.message;
-
-            msgDiv.appendChild(meta);
-            msgDiv.appendChild(text);
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // === Load Messages from Supabase ===
-        async function loadMessages() {
-            const { data, error } = await supabase
-                .from('chat_messages')
-                .select('name, surname, message, is_donate, amount')
-                .order('inserted_at', { ascending: true });
-
-            if (error) {
-                console.error('Ошибка загрузки сообщений:', error);
-                return;
-            }
-
-            data.forEach(msg => {
-                postToChat({
-                    name: msg.name,
-                    surname: msg.surname || '',
-                    message: msg.message,
-                    isDonate: msg.is_donate,
-                    amount: msg.amount || null
-                });
-            });
-        }
-
-        // === Send Message to Supabase ===
-        async function sendToSupabase(data) {
-            const { error } = await supabase
-                .from('chat_messages')
-                .insert([{
-                    name: data.name,
-                    surname: data.surname,
-                    message: data.message,
-                    is_donate: data.isDonate,
-                    amount: data.amount
-                }]);
-
-            if (error) {
-                console.error('Ошибка отправки сообщения:', error);
-            }
-        }
-
-        // === Initialize ===
-        loadMessages();
-
-        // === Send Message ===
-        chatSendBtn.addEventListener('click', () => {
-            const name = chatNameInput.value.trim() || 'Аноним';
-            const surname = chatSurnameInput.value.trim();
-            const msg = chatMsgInput.value.trim();
-            if (!msg) return;
-
-            const isDonate = pendingDonation && pendingDonation.paid && pendingDonation.sum;
-            const amount = isDonate ? pendingDonation.sum : null;
-
-            // Отображаем сообщение
-            postToChat({
-                name,
-                surname,
-                message: msg,
-                isDonate,
-                amount
-            });
-
-            if (isDonate) {
-                donateStats.totalSum += amount;
-                donateStats.totalCount += 1;
-                updateStats();
-                pendingDonation = null;
-            }
-
-            // Отправляем в Supabase
-            sendToSupabase({
-                name,
-                surname,
-                message: msg,
-                isDonate,
-                amount
-            });
-
-            // Очистка
-            chatMsgInput.value = '';
-            donateToggle.checked = false;
-        });
-
-        // === Donate Flow ===
-        document.querySelectorAll('.bank-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const bank = card.dataset.bank;
-                document.getElementById('step-bank').style.display = 'none';
-                document.getElementById(`step-${bank}`).style.display = 'flex';
-                pendingDonation = { bank, paid: false, sum: null };
-            });
-        });
-
-        // === YooMoney Steps ===
-        document.querySelectorAll('#step-yoomoney .ym-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const sum = btn.dataset.sum;
-                if (sum === 'custom') {
-                    document.querySelector('.ym-custom-wrap').style.display = 'block';
-                } else {
-                    pendingDonation.sum = parseInt(sum);
-                    pendingDonation.paid = true;
-                    document.getElementById('step-yoomoney').style.display = 'none';
-                    document.getElementById('step-bank').style.display = 'flex';
-                }
-            });
-        });
-
-        document.getElementById('ym-custom-go').addEventListener('click', () => {
-            const sum = parseInt(document.getElementById('ym-custom-input').value);
-            if (sum && sum >= 1 && sum <= 10000) {
-                pendingDonation.sum = sum;
-                pendingDonation.paid = true;
-                document.getElementById('step-yoomoney').style.display = 'none';
-                document.getElementById('step-bank').style.display = 'flex';
-            }
-        });
-
-        // === QR Steps (SBP, Tinkoff, Sber, VTB) ===
-        document.querySelectorAll('.qr-btn-ok').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const bank = btn.dataset.bank;
-                pendingDonation.sum = 100; // Можно улучшить: спрашивать сумму
-                pendingDonation.paid = true;
-                document.getElementById(`step-${bank}`).style.display = 'none';
-                document.getElementById('step-bank').style.display = 'flex';
-            });
-        });
-
-        // === Manual Sum ===
-        document.getElementById('manual-sum-ok').addEventListener('click', () => {
-            const sum = parseInt(document.getElementById('manual-sum-input').value);
-            if (sum && sum >= 1 && sum <= 10000) {
-                pendingDonation.sum = sum;
-                pendingDonation.paid = true;
-                document.getElementById('step-other').style.display = 'none';
-                document.getElementById('step-bank').style.display = 'flex';
-            }
-        });
-
-        // === Cancel Buttons ===
-        document.querySelectorAll('.qr-btn-cancel, #manual-sum-cancel').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const parent = btn.closest('.donate-step');
-                parent.style.display = 'none';
-                document.getElementById('step-bank').style.display = 'flex';
-            });
-        });
-
-        // === Toggle Donate Mode ===
-        donateToggle.addEventListener('change', () => {
-            if (donateToggle.checked) {
-                document.getElementById('step-bank').style.display = 'flex';
-            }
-        });
-    </script>
 </body>
 </html>

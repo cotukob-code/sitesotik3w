@@ -162,6 +162,30 @@
         <Execute>
           <option name="pattern" value="git push --force" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git remote set-url origin git@gitverse.ru:siteofsotik/sitesotik.git" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot; &amp;&amp; node -v" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; node -v" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; npm install" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; npm run dev" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; node server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik\backend&quot;; node server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add C:/laragon/www/sitesotik/public/index.html" />
+        </Execute>
       </list>
     </option>
   </component>

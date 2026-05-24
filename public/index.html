@@ -877,9 +877,9 @@
       // Настройка навигации
       const navMap = {
         'Главная': 'index.html',
-        'Обо мне': 'about.html',
-        'Игры': 'games.html',
-        'Команда': 'team.html',
+        'Обо мне': 'about/index.html',
+        'Игры': 'games/index.html',
+        'Команда': 'team/index.html',
         'Партнеры': 'partners.html'
       };
       
@@ -907,7 +907,7 @@
 
       // Функция загрузки контента
       function loadContent(page) {
-        fetch(`/public/siteofsotik/${page}`)
+        fetch(`siteofsotik/${page}`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`Ошибка загрузки: ${response.status}`);
