@@ -29,12 +29,41 @@
         }
 
         .layout{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:10px;
-            height:auto;
-            min-height:120vh;
-            padding:10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            min-height: 600px;
+            padding: 10px;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .player-wrap,
+            .chat-shell {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                transition: transform 0.3s ease;
+                z-index: 1;
+            }
+            .player-wrap {
+                transform: translateX(0);
+            }
+            .chat-shell {
+                transform: translateX(100%);
+            }
+            .player-wrap.swipe-left {
+                transform: translateX(-100%);
+            }
+            .chat-shell.swipe-right {
+                transform: translateX(0);
+            }
         }
 
         /* --- ПЛЕЕР --- */
@@ -77,7 +106,8 @@
             flex-direction:column;
             overflow:hidden;
 
-            min-height:250px; /* было 360px → уменьшено на 30% */
+            min-height:250px;
+            height: 78%;
         }
 
         .chat-header-main{

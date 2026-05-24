@@ -135,6 +135,24 @@
         <Execute>
           <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Исправление подключения Supabase и удаление chat.js&quot;; git push" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="ping -n 1 localhost" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/index.html -Raw" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/about.html -Raw" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/games.html -Raw" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/team.html -Raw" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/partners.html -Raw" />
+        </Execute>
       </list>
     </option>
   </component>

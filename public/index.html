@@ -6,6 +6,391 @@
   <meta name='viewport' content='width=device-width, initial-scale=1' />
 
   <style>
+        /* ================== САЙТСОТИКА — ПОЛНОЦЕННОЕ ОКНО ================== */
+        .sitesotik-app {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(40px) scale(0.96);
+          transition: opacity var(--transition-slow),
+            transform var(--transition-slow);
+          background: radial-gradient(circle at top, #020617 0, #000 60%);
+          z-index: 10;
+        }
+
+        .sitesotik-app--active {
+          background: radial-gradient(circle at top, #020617 0, #000 60%);
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0) scale(1);
+        }
+
+        /* ===== ХЭДЕР САЙТСОТИКА ===== */
+        .sitesotik-header {
+          padding: 14px 24px;
+          border-bottom: 1px solid var(--border);
+          background: rgba(2, 6, 23, 0.96);
+          backdrop-filter: blur(16px);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          z-index: 5;
+        }
+
+        .sitesotik-back {
+          position: absolute;
+          left: 24px;
+          padding: 7px 14px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.96);
+          color: var(--text-main);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: background 200ms ease, border-color 200ms ease,
+            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
+        }
+
+        .sitesotik-back:hover {
+          background: rgba(56, 189, 248, 0.18);
+          border-color: var(--accent-blue);
+          color: var(--accent-blue);
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
+          transform: translateY(-1px);
+        }
+
+        .sitesotik-header-center {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          pointer-events: none;
+          margin-left: 110px;
+        }
+
+        .sitesotik-header-logo-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 999px;
+          background: conic-gradient(
+            from 210deg,
+            #38bdf8,
+            #22c55e,
+            #fbbf24,
+            #ec4899,
+            #38bdf8
+          );
+          padding: 2px;
+          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+        }
+
+        .sitesotik-header-logo-inner {
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #e5e7eb;
+          font-weight: 800;
+          font-size: 16px;
+          letter-spacing: 0.08em;
+        }
+
+        .sitesotik-header-title {
+          font-size: 20px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: none;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-nav {
+          position: absolute;
+          right: 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .sitesotik-nav-list {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .sitesotik-nav-btn {
+          padding: 7px 14px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.96);
+          color: var(--text-main);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: background 200ms ease, border-color 200ms ease,
+            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
+        }
+
+        .sitesotik-nav-btn:hover {
+          background: rgba(56, 189, 248, 0.18);
+          border-color: var(--accent-blue);
+          color: var(--accent-blue);
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
+          transform: translateY(-1px);
+        }
+        
+        .sitesotik-nav-btn.active {
+          background: rgba(56, 189, 248, 0.36);
+          border-color: var(--accent-blue);
+          color: var(--accent-blue);
+          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+        }
+
+        /* ===== КОНТЕНТ САЙТСОТИКА ===== */
+        .sitesotik-content {
+          flex: 1;
+          padding: 32px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+          overflow-y: auto;
+        }
+
+        .sitesotik-hero {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .sitesotik-hero-title {
+          font-size: 28px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-hero-subtitle {
+          font-size: 14px;
+          color: var(--text-soft);
+          max-width: 520px;
+          text-align: center;
+        }
+
+        .sitesotik-features {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+          .sitesotik-features {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .sitesotik-feature {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 12px;
+          padding: 20px;
+          border-radius: var(--radius-lg);
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.4);
+        }
+
+        .sitesotik-feature-icon {
+          font-size: 32px;
+        }
+
+        .sitesotik-feature-title {
+          font-size: 16px;
+          font-weight: 700;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-feature-desc {
+          font-size: 12px;
+          color: var(--text-soft);
+        }
+
+        .sitesotik-cta {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          padding: 32px 24px;
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.4);
+          text-align: center;
+        }
+
+        .sitesotik-cta-title {
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-cta-subtitle {
+          font-size: 12px;
+          color: var(--text-soft);
+        }
+
+        .sitesotik-cta-btn {
+          margin-top: 12px;
+          padding: 12px 28px;
+          border-radius: 999px;
+          border: 1px solid var(--accent-blue);
+          background: rgba(56, 189, 248, 0.18);
+          color: var(--accent-blue);
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: all 200ms ease;
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+        }
+
+        .sitesotik-cta-btn:hover {
+          background: rgba(56, 189, 248, 0.36);
+          color: #fff;
+          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+        }
+
+        /* ===== КОНТЕНТ САЙТСОТИКА ===== */
+        .sitesotik-content {
+          flex: 1;
+          padding: 32px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+          overflow-y: auto;
+        }
+
+        .sitesotik-hero {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .sitesotik-hero-title {
+          font-size: 28px;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-hero-subtitle {
+          font-size: 14px;
+          color: var(--text-soft);
+          max-width: 520px;
+          text-align: center;
+        }
+
+        .sitesotik-features {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+          .sitesotik-features {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .sitesotik-feature {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 12px;
+          padding: 20px;
+          border-radius: var(--radius-lg);
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.4);
+        }
+
+        .sitesotik-feature-icon {
+          font-size: 32px;
+        }
+
+        .sitesotik-feature-title {
+          font-size: 16px;
+          font-weight: 700;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-feature-desc {
+          font-size: 12px;
+          color: var(--text-soft);
+        }
+
+        .sitesotik-cta {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          padding: 32px 24px;
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--border);
+          background: rgba(15, 23, 42, 0.4);
+          text-align: center;
+        }
+
+        .sitesotik-cta-title {
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #e5e7eb;
+        }
+
+        .sitesotik-cta-subtitle {
+          font-size: 12px;
+          color: var(--text-soft);
+        }
+
+        .sitesotik-cta-btn {
+          margin-top: 12px;
+          padding: 12px 28px;
+          border-radius: 999px;
+          border: 1px solid var(--accent-blue);
+          background: rgba(56, 189, 248, 0.18);
+          color: var(--accent-blue);
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          cursor: pointer;
+          transition: all 200ms ease;
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+        }
+
+        .sitesotik-cta-btn:hover {
+          background: rgba(56, 189, 248, 0.36);
+          color: #fff;
+          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+        }
         /* ================== БАЗА ================== */
         * {
           margin: 0;
@@ -331,640 +716,217 @@
         .hub-window:hover .hub-window-arrow {
           transform: translateX(4px);
         }
-
-        /* ================== САЙТСОТИКА — ПОЛНОЦЕННОЕ ОКНО ================== */
-        .sitesotik-app {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          opacity: 0;
-          pointer-events: none;
-          transform: translateY(40px) scale(0.96);
-          transition: opacity var(--transition-slow),
-            transform var(--transition-slow);
-          background: radial-gradient(circle at top, #020617 0, #000 60%);
-          z-index: 10;
-        }
-
-        .sitesotik-app--active {
-          background: radial-gradient(circle at top, #020617 0, #000 60%);
-          opacity: 1;
-          pointer-events: auto;
-          transform: translateY(0) scale(1);
-        }
-
-        /* ===== ХЭДЕР САЙТСОТИКА ===== */
-        .sitesotik-header {
-          padding: 14px 24px;
-          border-bottom: 1px solid var(--border);
-          background: rgba(2, 6, 23, 0.96);
-          backdrop-filter: blur(16px);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          position: relative;
-          z-index: 5;
-        }
-
-        .sitesotik-back {
-          position: absolute;
-          left: 24px;
-          padding: 7px 14px;
-          border-radius: 999px;
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.96);
-          color: var(--text-main);
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: background 200ms ease, border-color 200ms ease,
-            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
-        }
-
-        .sitesotik-back:hover {
-          background: rgba(56, 189, 248, 0.18);
-          border-color: var(--accent-blue);
-          color: var(--accent-blue);
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
-          transform: translateY(-1px);
-        }
-
-        .sitesotik-header-center {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          pointer-events: none;
-          margin-left: 110px;
-        }
-
-        .sitesotik-header-logo-circle {
-          width: 36px;
-          height: 36px;
-          border-radius: 999px;
-          background: conic-gradient(
-            from 210deg,
-            #38bdf8,
-            #22c55e,
-            #fbbf24,
-            #ec4899,
-            #38bdf8
-          );
-          padding: 2px;
-          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
-        }
-
-        .sitesotik-header-logo-inner {
-          width: 100%;
-          height: 100%;
-          border-radius: inherit;
-          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #e5e7eb;
-          font-weight: 800;
-          font-size: 16px;
-          letter-spacing: 0.08em;
-        }
-
-        .sitesotik-header-title {
-          font-size: 20px;
-          font-weight: 900;
-          letter-spacing: 0.18em;
-          text-transform: none;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-nav {
-          position: absolute;
-          right: 24px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .sitesotik-nav-list {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .sitesotik-nav-btn {
-          padding: 7px 14px;
-          border-radius: 999px;
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.96);
-          color: var(--text-main);
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: background 200ms ease, border-color 200ms ease,
-            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
-          white-space: nowrap;
-        }
-
-        .sitesotik-nav-btn:hover {
-          background: rgba(30, 64, 175, 0.9);
-          border-color: rgba(129, 140, 248, 0.9);
-          box-shadow: 0 0 16px rgba(129, 140, 248, 0.7);
-          transform: translateY(-1px);
-        }
-
-        .sitesotik-nav-btn--active {
-          background: rgba(56, 189, 248, 0.18);
-          border-color: var(--accent-blue);
-          color: var(--accent-blue);
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
-        }
-
-        .sitesotik-burger {
-          display: none;
-          width: 32px;
-          height: 32px;
-          border-radius: 999px;
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.96);
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: background 200ms ease, border-color 200ms ease,
-            transform 120ms ease;
-        }
-
-        .sitesotik-burger-lines {
-          width: 18px;
-          height: 12px;
-          position: relative;
-        }
-
-        .sitesotik-burger-line {
-          position: absolute;
-          left: 0;
-          right: 0;
-          height: 2px;
-          border-radius: 999px;
-          background: #e5e7eb;
-          transition: transform 200ms ease, opacity 200ms ease, top 200ms ease,
-            bottom 200ms ease;
-        }
-
-        .sitesotik-burger-line--1 {
-          top: 0;
-        }
-
-        .sitesotik-burger-line--2 {
-          top: 5px;
-        }
-
-        .sitesotik-burger-line--3 {
-          bottom: 0;
-        }
-
-        .sitesotik-burger--open .sitesotik-burger-line--1 {
-          top: 5px;
-          transform: rotate(45deg);
-        }
-
-        .sitesotik-burger--open .sitesotik-burger-line--2 {
-          opacity: 0;
-        }
-
-        .sitesotik-burger--open .sitesotik-burger-line--3 {
-          bottom: 5px;
-          transform: rotate(-45deg);
-        }
-
-        .sitesotik-burger:hover {
-          background: rgba(30, 64, 175, 0.9);
-          border-color: rgba(129, 140, 248, 0.9);
-          transform: translateY(-1px);
-        }
-
-        @media (max-width: 720px) {
-          .sitesotik-nav-list {
-            display: none;
-          }
-
-          .sitesotik-burger {
-            display: inline-flex;
-          }
-
-          .sitesotik-nav--mobile-open .sitesotik-nav-list {
-            display: flex;
-            position: absolute;
-            top: 46px;
-            right: 0;
-            flex-direction: column;
-            align-items: flex-end;
-            padding: 8px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            background: rgba(15, 23, 42, 0.98);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-          }
-        }
-
-        /* ===== ОСНОВНОЙ Обо мне САЙТСОТИКА ===== */
-        .sitesotik-main {
-          flex: 1;
-          padding: 16px 24px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-        }
-
-        .sitesotik-frame {
-          flex: 1;
-          border-radius: var(--radius-xl);
-          border: 1px solid var(--border);
-          background: #020617;
-          box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
-          padding: 18px 20px 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .sitesotik-frame-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-          border-bottom: 1px solid rgba(31, 41, 55, 0.9);
-          padding-bottom: 8px;
-        }
-
-        .sitesotik-frame-title {
-          font-size: 18px;
-          font-weight: 800;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-        }
-
-        .sitesotik-frame-sub {
-          font-size: 11px;
-          color: var(--text-soft);
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-        }
-
-        .sitesotik-frame-body {
-          flex: 1;
-          overflow-y: auto;
-          padding-right: 8px;
-          font-size: 14px;
-          color: var(--text-soft);
-        }
-
-        .sitesotik-page {
-          display: none;
-          animation: sitesotik-page-in 420ms ease-out forwards;
-        }
-
-        .sitesotik-page--active {
-          display: block;
-        }
-
-        @keyframes sitesotik-page-in {
-          0% {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .sitesotik-page h2 {
-          font-size: 20px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          margin-bottom: 8px;
-          color: var(--text-main);
-        }
-
-        .sitesotik-page p {
-          margin-bottom: 8px;
-          line-height: 1.7;
-        }
-
-        .sitesotik-section {
-          margin-top: 14px;
-          padding-top: 10px;
-          border-top: 1px dashed rgba(55, 65, 81, 0.9);
-        }
-
-        .sitesotik-section-title {
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          color: var(--text-soft);
-          margin-bottom: 6px;
-        }
-
-        .sitesotik-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 10px;
-        }
-
-        .sitesotik-card {
-          border-radius: var(--radius-md);
-          border: 1px solid rgba(31, 41, 55, 0.9);
-          background: #020617;
-          padding: 9px 10px;
-          font-size: 13px;
-        }
-
-        .sitesotik-card-title {
-          font-size: 13px;
-          font-weight: 600;
-          margin-bottom: 4px;
-          color: var(--text-main);
-        }
-
-        .sitesotik-badges {
-          margin-top: 6px;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 5px;
-        }
-
-        .sitesotik-badge {
-          border-radius: 999px;
-          padding: 2px 7px;
-          border: 1px solid rgba(55, 65, 81, 0.9);
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.14em;
-          color: var(--text-soft);
-        }
-
-        @media (max-width: 768px) {
-          .hub-shell {
-            padding: 16px 14px 18px;
-          }
-
-          .sitesotik-main {
-            padding: 14px 14px 18px;
-          }
-
-          .sitesotik-frame {
-            padding: 16px 14px 18px;
-          }
-        }
-
-        @media (max-width: 540px) {
-          .hub-top {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
-          }
-
-          .sitesotik-header {
-            padding: 12px 14px;
-          }
-
-          .sitesotik-back {
-            left: 14px;
-          }
-
-          .sitesotik-nav {
-            right: 14px;
-          }
-
-          .sitesotik-main {
-            padding: 12px 10px 14px;
-          }
-        }
-        .sitesotik-iframe {
-          width: 100%;
-          height: calc(100vh - 200px);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-xl);
-          background: #020617;
-          box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
-        }
   </style>
 </head>
 <body>
-
-<!-- ХАБ -->
-<div class='hub-shell' id='hub-shell'>
-  <div class='hub-top'>
-    <div class='hub-brand'>
-      <div class='hub-logo'>
-        <div class='hub-logo-inner'>S</div>
+  <div class="hub-shell">
+    <div class="hub-top">
+      <div class="hub-brand">
+        <div class="hub-logo">
+          <div class="hub-logo-inner">S</div>
+        </div>
+        <div class="hub-brand-stack">
+          <div class="hub-brand-text-main">СайтСотика</div>
+          <div class="hub-brand-text-sub">Хаб</div>
+        </div>
       </div>
-      <div class='hub-brand-stack'>
-        <div class='hub-brand-text-main'>СайтСотика</div>
-        <div class='hub-brand-text-sub'>центральный хаб проекта</div>
+      <div class="hub-tag">v4</div>
+    </div>
+
+    <div class="hub-center">
+      <div class="hub-title">Добро пожаловать</div>
+      <div class="hub-subtitle">Выберите раздел для продолжения</div>
+    </div>
+
+    <div class="hub-bottom">
+      <div class="hub-bottom-pill">Готово к использованию</div>
+    </div>
+
+    <div class="hub-windows-row">
+      <div class="hub-window hub-window--site">
+        <div class="hub-window-header">
+          <div>
+            <div class="hub-window-label">Раздел</div>
+            <div class="hub-window-title hub-window-title--blue">Сайт</div>
+          </div>
+          <div class="hub-window-badge">Основной</div>
+        </div>
+        <div class="hub-window-body">
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Статус</div>
+            <div class="hub-window-row-value">Активен</div>
+          </div>
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Версия</div>
+            <div class="hub-window-row-value">4.0</div>
+          </div>
+        </div>
+        <div class="hub-window-footer">
+          <div>Открыть</div>
+          <div class="hub-window-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="hub-window hub-window--donate">
+        <div class="hub-window-header">
+          <div>
+            <div class="hub-window-label">Раздел</div>
+            <div class="hub-window-title hub-window-title--green">Донат</div>
+          </div>
+          <div class="hub-window-badge">Поддержка</div>
+        </div>
+        <div class="hub-window-body">
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Статус</div>
+            <div class="hub-window-row-value">Доступен</div>
+          </div>
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Способы</div>
+            <div class="hub-window-row-value">5+</div>
+          </div>
+        </div>
+        <div class="hub-window-footer">
+          <div>Поддержать</div>
+          <div class="hub-window-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="hub-window hub-window--auction">
+        <div class="hub-window-header">
+          <div>
+            <div class="hub-window-label">Раздел</div>
+            <div class="hub-window-title hub-window-title--gold">Аукцион</div>
+          </div>
+          <div class="hub-window-badge">Скоро</div>
+        </div>
+        <div class="hub-window-body">
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Статус</div>
+            <div class="hub-window-row-value">В разработке</div>
+          </div>
+          <div class="hub-window-row">
+            <div class="hub-window-row-label">Запуск</div>
+            <div class="hub-window-row-value">Q3 2024</div>
+          </div>
+        </div>
+        <div class="hub-window-footer">
+          <div>Подробнее</div>
+          <div class="hub-window-arrow">→</div>
+        </div>
       </div>
     </div>
-    <div class='hub-tag'>управление проектами</div>
   </div>
-
-  <div class='hub-center'>
-    <div>
-      <div class='hub-title'>Три окна проекта</div>
-      <div class='hub-subtitle'>
-        Выбери окно. После клика оно развернётся на весь экран, появится хэдер с навигацией, а в Обо мнее загрузится нужная страница.
+</body>
+  <!-- Полноценное окно СайтСотика -->
+  <div class="sitesotik-app">
+    <div class="sitesotik-header">
+      <div class="sitesotik-back">← Назад</div>
+      <div class="sitesotik-header-center">
+        <div class="sitesotik-header-logo-circle">
+          <div class="sitesotik-header-logo-inner">S</div>
+        </div>
+        <div class="sitesotik-header-title">СайтСотика</div>
+      </div>
+      <div class="sitesotik-nav">
+        <div class="sitesotik-nav-list">
+          <div class="sitesotik-nav-btn">Главная</div>
+          <div class="sitesotik-nav-btn">Обо мне</div>
+          <div class="sitesotik-nav-btn">Игры</div>
+          <div class="sitesotik-nav-btn">Команда</div>
+          <div class="sitesotik-nav-btn">Партнеры</div>
+        </div>
       </div>
     </div>
-
-    <div class='hub-windows-row'>
-
-      <!-- ОКНО 1 — С КАРТИНКОЙ -->
-      <div class='hub-window hub-window--site' onclick="openSiteApp()">
-        <div class='hub-window-header'>
-          <div>
-            <div class='hub-window-label'>проект</div>
-            <div class='hub-window-title hub-window-title--blue'>СайтСотика</div>
-          </div>
-          <div class='hub-window-badge'>активен</div>
-        </div>
-
-        <div class='hub-window-body' style="padding:0;">
-          <div style="position:relative;width:100%;padding-top:56.25%;border-radius:18px;overflow:hidden;">
-            <img src="/images/siteofsotik.png" alt="СайтСотика" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-          </div>
-        </div>
-
-        <div class='hub-window-footer'>
-          <span>Кликните для входа</span>
-          <span class='hub-window-arrow'></span>
-        </div>
+    <div class="sitesotik-body">
+      <div id="sitesotik-content" class="sitesotik-content">
+        <!-- Контент будет загружен динамически -->
       </div>
-
-      <!-- ОКНО 2 -->
-      <div class='hub-window hub-window--donate'>
-        <div class='hub-window-header'>
-          <div>
-            <div class='hub-window-label'>поддержка</div>
-            <div class='hub-window-title hub-window-title--green'>Донаты</div>
-          </div>
-          <div class='hub-window-badge'>скоро</div>
-        </div>
-        <div class='hub-window-body'>
-          <div class='hub-window-row'>
-            <div class='hub-window-row-label'>статус</div>
-            <div class='hub-window-row-value'>в разработке</div>
-          </div>
-        </div>
-        <div class='hub-window-footer'>
-          <span>позже</span>
-          <span class='hub-window-arrow'></span>
-        </div>
-      </div>
-
-      <!-- ОКНО 3 -->
-      <div class='hub-window hub-window--auction'>
-        <div class='hub-window-header'>
-          <div>
-            <div class='hub-window-label'>механика</div>
-            <div class='hub-window-title hub-window-title--gold'>Аукцион</div>
-          </div>
-          <div class='hub-window-badge'>скоро</div>
-        </div>
-        <div class='hub-window-body'>
-          <div class='hub-window-row'>
-            <div class='hub-window-row-label'>статус</div>
-            <div class='hub-window-row-value'>в разработке</div>
-          </div>
-        </div>
-        <div class='hub-window-footer'>
-          <span>позже</span>
-          <span class='hub-window-arrow'></span>
-        </div>
-      </div>
-
     </div>
-
-    <div class='hub-bottom'>
-      <div class='hub-bottom-pill'>хаб · три окна · один стиль</div>
-      <div>СайтСотика · локальная разработка</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ОКНО САЙТСОТИКА -->
-  <div class='sitesotik-app' id='sitesotik-app'>
-    <header class='sitesotik-header'>
-      <button class='sitesotik-back' type='button' onclick='closeSiteApp()'>Назад</button>
-
-      <div class='sitesotik-header-center'>
-        <div class='sitesotik-header-logo-circle'>
-          <div class='sitesotik-header-logo-inner'>S</div>
-        </div>
-        <div class='sitesotik-header-title'>СайтСотика</div>
-      </div>
-
-      <nav class='sitesotik-nav' id='sitesotik-nav'>
-        <div class='sitesotik-nav-list'>
-          <button class='sitesotik-nav-btn sitesotik-nav-btn--active' data-page='home'>Главная</button>
-          <button class='sitesotik-nav-btn' data-page='content'>Обо мне</button>
-          <button class='sitesotik-nav-btn' data-page='games'>Игры</button>
-          <button class='sitesotik-nav-btn' data-page='team'>Команда</button>
-          <button class='sitesotik-nav-btn' data-page='partners'>Партнёры</button>
-        </div>
-        <button class='sitesotik-burger' type='button' id='sitesotik-burger'>
-          <div class='sitesotik-burger-lines'>
-            <div class='sitesotik-burger-line sitesotik-burger-line--1'></div>
-            <div class='sitesotik-burger-line sitesotik-burger-line--2'></div>
-            <div class='sitesotik-burger-line sitesotik-burger-line--3'></div>
-          </div>
-        </button>
-      </nav>
-    </header>
-
-    <main class='sitesotik-main'>
-      <section class='sitesotik-frame'>
-        <div class='sitesotik-frame-header'>
-          <div class='sitesotik-frame-title'>Раздел</div>
-          <div class='sitesotik-frame-sub' id='sitesotik-frame-sub'>Главная проекта</div>
-        </div>
-        <div class='sitesotik-frame-body'>
-          <iframe id='sitesotik-iframe' class='sitesotik-iframe' src='./siteofsotik/1.html'></iframe>
-        </div>
-      </section>
-    </main>
   </div>
 
   <script>
-    const hubShell = document.getElementById('hub-shell');
-    const siteApp = document.getElementById('sitesotik-app');
-    const nav = document.getElementById('sitesotik-nav');
-    const burger = document.getElementById('sitesotik-burger');
-    const iframe = document.getElementById('sitesotik-iframe');
-    const frameSub = document.getElementById('sitesotik-frame-sub');
+    // Логика открытия окон
+    document.addEventListener('DOMContentLoaded', () => {
+      const hubShell = document.querySelector('.hub-shell');
+      const sitesotikApp = document.querySelector('.sitesotik-app');
+      const sitesotikBack = document.querySelector('.sitesotik-back');
+      const siteWindow = document.querySelector('.hub-window--site');
+      const contentContainer = document.getElementById('sitesotik-content');
+      const navButtons = document.querySelectorAll('.sitesotik-nav-btn');
 
-    const routes = {
-      home:      { src: './siteofsotik/index.html',      label: 'Главная проекта' },
-      content:   { src: './siteofsotik/about.html',    label: 'Обо мне проекта' },
-      games:     { src: './siteofsotik/games.html',      label: 'Игры проекта' },
-      team:      { src: './siteofsotik/team.html',       label: 'Команда проекта' },
-      partners:  { src: './siteofsotik/partners.html',   label: 'Партнёры проекта' }
-    };
-
-    function openSiteApp(){
-      hubShell.classList.add('hub-shell--hidden');
-      siteApp.classList.add('sitesotik-app--active');
-      setActiveNav('home');
-      loadPage('home');
-    }
-
-    function closeSiteApp(){
-      siteApp.classList.remove('sitesotik-app--active');
-      hubShell.classList.remove('hub-shell--hidden');
-    }
-
-    function setActiveNav(page){
-      document.querySelectorAll('.sitesotik-nav-btn').forEach(btn => {
-        if(btn.dataset.page === page){
-          btn.classList.add('sitesotik-nav-btn--active');
-        } else {
-          btn.classList.remove('sitesotik-nav-btn--active');
-        }
-      });
-    }
-
-    function loadPage(page){
-      const cfg = routes[page] || routes.home;
-      iframe.src = cfg.src;
-      frameSub.textContent = cfg.label;
-      setActiveNav(page);
-      // При смене страницы в iframe, скрываем хаб
-      iframe.onload = () => {
+      // Открытие окна Сайт
+      siteWindow.addEventListener('click', () => {
         hubShell.classList.add('hub-shell--hidden');
+        sitesotikApp.classList.add('sitesotik-app--active');
+        loadContent('index.html');
+      });
+
+      // Закрытие окна Сайт
+      sitesotikBack.addEventListener('click', () => {
+        hubShell.classList.remove('hub-shell--hidden');
+        sitesotikApp.classList.remove('sitesotik-app--active');
+      });
+
+      // Заглушка для других окон
+      document.querySelectorAll('.hub-window:not(.hub-window--site)').forEach(window => {
+        window.addEventListener('click', () => {
+          alert('Раздел в разработке');
+        });
+      });
+
+      // Настройка навигации
+      const navMap = {
+        'Главная': 'index.html',
+        'Обо мне': 'about.html',
+        'Игры': 'games.html',
+        'Команда': 'team.html',
+        'Партнеры': 'partners.html'
       };
-    }
+      
+      // Функция для установки активного пункта
+      function setActiveButton(page) {
+        navButtons.forEach(btn => {
+          const pageForBtn = navMap[btn.textContent];
+          if (pageForBtn === page) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
 
-    document.querySelectorAll('.sitesotik-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const page = btn.dataset.page;
-        loadPage(page);
+      navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const page = navMap[button.textContent];
+          if (page) {
+            loadContent(page);
+            setActiveButton(page);
+          }
+        });
       });
-    });
 
-    burger.addEventListener('click', () => {
-      burger.classList.toggle('sitesotik-burger--open');
-      nav.classList.toggle('sitesotik-nav--mobile-open');
-    });
-
-    // Закрытие мобильного меню при клике на кнопку навигации
-    document.querySelectorAll('.sitesotik-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        burger.classList.remove('sitesotik-burger--open');
-        nav.classList.remove('sitesotik-nav--mobile-open');
-      });
+      // Функция загрузки контента
+      function loadContent(page) {
+        fetch(`/public/siteofsotik/${page}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Ошибка загрузки: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then(html => {
+            contentContainer.innerHTML = html;
+            // Устанавливаем активный пункт после загрузки
+            setActiveButton(page);
+          })
+          .catch(error => {
+            console.error('Ошибка загрузки контента:', error);
+            contentContainer.innerHTML = '<div class="sitesotik-error">Ошибка загрузки страницы. Попробуйте позже.</div>';
+          });
+      }
+      
+      // Устанавливаем 'Главная' активной при открытии
+      setActiveButton('index.html');
     });
   </script>
-
-</body>
 </html>
