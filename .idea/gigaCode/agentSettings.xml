@@ -186,6 +186,51 @@
         <Execute>
           <option name="pattern" value="git add C:/laragon/www/sitesotik/public/index.html" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git remote -v" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git remote set-url origin https://github.com/siteofsotik/sitesotik.git" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Исправлены пути в loadContent и navMap для корректной работы через http://sitesotik.test&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git remote set-url origin https://github.com/siteofsotik/sitesotik" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="rm C:/laragon/www/sitesotik/middleware.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add C:/laragon/www/sitesotik/middleware.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Удалён middleware.js как несовместимый с текущим окружением&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git remote set-url origin https://github.com/cotukob-code/sitesotik3w.git" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="npm install -g vercel" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="vercel --version" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ExecutionPolicy" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Set-ExecutionPolicy RemoteSigned -Scope CurrentUser" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="vercel logs https://sitesotik3w.vercel.app" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="vercel --prod" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="vercel --prod --yes" />
+        </Execute>
       </list>
     </option>
   </component>

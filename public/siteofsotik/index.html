@@ -28,6 +28,10 @@
                              const sendBtn = document.getElementById("chat-send");
                              const donateToggle = document.getElementById("donate-toggle");
                              
+                             // Элементы статистики
+                             const donateTotalSum = document.getElementById("donate-total-sum");
+                             const donateTotalCount = document.getElementById("donate-total-count");
+                             
                              // -------------------------
                              // Добавление сообщения в DOM
                              // -------------------------
@@ -59,12 +63,45 @@
                              
                                      chatMessages.innerHTML = "";
                                      data.forEach(addMessage);
+                                     updateDonationStats(); // Обновляем статистику после загрузки
                                  } catch (err) {
                                      console.error("Ошибка при загрузке сообщений:", err);
                                  }
                              }
-                             // Загружаем сообщения после полной загрузки DOM
-                             document.addEventListener('DOMContentLoaded', loadMessages);
+                             
+                             // -------------------------
+                             // Загрузка статистики по донатам
+                             // -------------------------
+                             async function updateDonationStats() {
+                                 try {
+                                     const { data, error } = await supabaseClient
+                                         .from("messages")
+                                         .select("donate, text")
+                                         .eq("donate", true);
+                             
+                                     if (error) {
+                                         console.error("Ошибка загрузки статистики:", error);
+                                         return;
+                                     }
+                             
+                                     const totalDonations = data.length;
+                                     const totalSum = data.reduce((sum, msg) => {
+                                         const amount = parseInt(msg.text.match(/\d+/)?.[0]) || 0;
+                                         return sum + amount;
+                                     }, 0);
+                             
+                                     donateTotalSum.textContent = `${totalSum} ₽`;
+                                     donateTotalCount.textContent = totalDonations;
+                                 } catch (err) {
+                                     console.error("Ошибка при обновлении статистики:", err);
+                                 }
+                             }
+                             
+                             // Загружаем сообщения и статистику после загрузки DOM
+                             document.addEventListener('DOMContentLoaded', () => {
+                                 loadMessages();
+                                 updateDonationStats();
+                             });
                              
                              // -------------------------
                              // 2) Realtime подписка
@@ -74,8 +111,11 @@
                                .on(
                                  "postgres_changes",
                                  { event: "INSERT", schema: "public", table: "messages" },
-                                 payload => {
+                                 (payload) => {
                                      addMessage(payload.new);
+                                     if (payload.new.donate) {
+                                         updateDonationStats(); // Обновляем статистику при новом донате
+                                     }
                                  }
                                )
                                .subscribe();
@@ -89,7 +129,15 @@
                                  const text = msgInput.value.trim();
                                  const donate = donateToggle.checked;
                              
-                                 if (!name || !surname || !text) return;
+                                 if (!name || !surname || !text) {
+                                     alert("Заполните все поля!");
+                                     return;
+                                 }
+                             
+                                 if (name.length > 20 || surname.length > 20 || text.length > 200) {
+                                     alert("Слишком длинные данные!");
+                                     return;
+                                 }
                              
                                  const { error } = await supabaseClient.from("messages").insert({
                                      name,
@@ -100,10 +148,14 @@
                              
                                  if (error) {
                                      console.error("Ошибка отправки:", error);
+                                     alert("Не удалось отправить сообщение. Попробуйте позже.");
                                      return;
                                  }
                              
                                  msgInput.value = "";
+                                 if (donate) {
+                                     updateDonationStats(); // Обновляем сразу, если это донат
+                                 }
                              };
                              </script>
 
