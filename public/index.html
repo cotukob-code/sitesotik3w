@@ -1,932 +1,207 @@
 <!DOCTYPE html>
-<html lang='ru'>
+<html lang="ru">
 <head>
-  <meta charset='UTF-8' />
-  <title>СайтСотика — Хаб</title>
-  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <meta charset="UTF-8">
+  <title>Хаб Сотика</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
-        /* ================== САЙТСОТИКА — ПОЛНОЦЕННОЕ ОКНО ================== */
-        .sitesotik-app {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          opacity: 0;
-          pointer-events: none;
-          transform: translateY(40px) scale(0.96);
-          transition: opacity var(--transition-slow),
-            transform var(--transition-slow);
-          background: radial-gradient(circle at top, #020617 0, #000 60%);
-          z-index: 10;
-        }
-
-        .sitesotik-app--active {
-          background: radial-gradient(circle at top, #020617 0, #000 60%);
-          opacity: 1;
-          pointer-events: auto;
-          transform: translateY(0) scale(1);
-        }
-
-        /* ===== ХЭДЕР САЙТСОТИКА ===== */
-        .sitesotik-header {
-          padding: 14px 24px;
-          border-bottom: 1px solid var(--border);
-          background: rgba(2, 6, 23, 0.96);
-          backdrop-filter: blur(16px);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          position: relative;
-          z-index: 5;
-        }
-
-        .sitesotik-back {
-          position: absolute;
-          left: 24px;
-          padding: 7px 14px;
-          border-radius: 999px;
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.96);
-          color: var(--text-main);
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: background 200ms ease, border-color 200ms ease,
-            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
-        }
-
-        .sitesotik-back:hover {
-          background: rgba(56, 189, 248, 0.18);
-          border-color: var(--accent-blue);
-          color: var(--accent-blue);
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
-          transform: translateY(-1px);
-        }
-
-        .sitesotik-header-center {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          pointer-events: none;
-          margin-left: 110px;
-        }
-
-        .sitesotik-header-logo-circle {
-          width: 36px;
-          height: 36px;
-          border-radius: 999px;
-          background: conic-gradient(
-            from 210deg,
-            #38bdf8,
-            #22c55e,
-            #fbbf24,
-            #ec4899,
-            #38bdf8
-          );
-          padding: 2px;
-          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
-        }
-
-        .sitesotik-header-logo-inner {
-          width: 100%;
-          height: 100%;
-          border-radius: inherit;
-          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #e5e7eb;
-          font-weight: 800;
-          font-size: 16px;
-          letter-spacing: 0.08em;
-        }
-
-        .sitesotik-header-title {
-          font-size: 20px;
-          font-weight: 900;
-          letter-spacing: 0.18em;
-          text-transform: none;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-nav {
-          position: absolute;
-          right: 24px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .sitesotik-nav-list {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .sitesotik-nav-btn {
-          padding: 7px 14px;
-          border-radius: 999px;
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.96);
-          color: var(--text-main);
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: background 200ms ease, border-color 200ms ease,
-            color 200ms ease, box-shadow 200ms ease, transform 120ms ease;
-        }
-
-        .sitesotik-nav-btn:hover {
-          background: rgba(56, 189, 248, 0.18);
-          border-color: var(--accent-blue);
-          color: var(--accent-blue);
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.7);
-          transform: translateY(-1px);
-        }
-        
-        .sitesotik-nav-btn.active {
-          background: rgba(56, 189, 248, 0.36);
-          border-color: var(--accent-blue);
-          color: var(--accent-blue);
-          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
-        }
-
-        /* ===== КОНТЕНТ САЙТСОТИКА ===== */
-        .sitesotik-content {
-          flex: 1;
-          padding: 32px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 40px;
-          overflow-y: auto;
-        }
-
-        .sitesotik-hero {
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .sitesotik-hero-title {
-          font-size: 28px;
-          font-weight: 900;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-hero-subtitle {
-          font-size: 14px;
-          color: var(--text-soft);
-          max-width: 520px;
-          text-align: center;
-        }
-
-        .sitesotik-features {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-          .sitesotik-features {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .sitesotik-feature {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          gap: 12px;
-          padding: 20px;
-          border-radius: var(--radius-lg);
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.4);
-        }
-
-        .sitesotik-feature-icon {
-          font-size: 32px;
-        }
-
-        .sitesotik-feature-title {
-          font-size: 16px;
-          font-weight: 700;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-feature-desc {
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-
-        .sitesotik-cta {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          padding: 32px 24px;
-          border-radius: var(--radius-xl);
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.4);
-          text-align: center;
-        }
-
-        .sitesotik-cta-title {
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-cta-subtitle {
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-
-        .sitesotik-cta-btn {
-          margin-top: 12px;
-          padding: 12px 28px;
-          border-radius: 999px;
-          border: 1px solid var(--accent-blue);
-          background: rgba(56, 189, 248, 0.18);
-          color: var(--accent-blue);
-          font-size: 14px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: all 200ms ease;
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
-        }
-
-        .sitesotik-cta-btn:hover {
-          background: rgba(56, 189, 248, 0.36);
-          color: #fff;
-          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
-        }
-
-        /* ===== КОНТЕНТ САЙТСОТИКА ===== */
-        .sitesotik-content {
-          flex: 1;
-          padding: 32px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 40px;
-          overflow-y: auto;
-        }
-
-        .sitesotik-hero {
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .sitesotik-hero-title {
-          font-size: 28px;
-          font-weight: 900;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-hero-subtitle {
-          font-size: 14px;
-          color: var(--text-soft);
-          max-width: 520px;
-          text-align: center;
-        }
-
-        .sitesotik-features {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-          .sitesotik-features {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .sitesotik-feature {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          gap: 12px;
-          padding: 20px;
-          border-radius: var(--radius-lg);
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.4);
-        }
-
-        .sitesotik-feature-icon {
-          font-size: 32px;
-        }
-
-        .sitesotik-feature-title {
-          font-size: 16px;
-          font-weight: 700;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-feature-desc {
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-
-        .sitesotik-cta {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          padding: 32px 24px;
-          border-radius: var(--radius-xl);
-          border: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.4);
-          text-align: center;
-        }
-
-        .sitesotik-cta-title {
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #e5e7eb;
-        }
-
-        .sitesotik-cta-subtitle {
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-
-        .sitesotik-cta-btn {
-          margin-top: 12px;
-          padding: 12px 28px;
-          border-radius: 999px;
-          border: 1px solid var(--accent-blue);
-          background: rgba(56, 189, 248, 0.18);
-          color: var(--accent-blue);
-          font-size: 14px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          cursor: pointer;
-          transition: all 200ms ease;
-          box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
-        }
-
-        .sitesotik-cta-btn:hover {
-          background: rgba(56, 189, 248, 0.36);
-          color: #fff;
-          box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
-        }
-        /* ================== БАЗА ================== */
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        html,
-        body {
-          height: 100%;
-        }
-
-        body {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-            sans-serif;
-          background: radial-gradient(circle at top, #020617 0, #000 60%);
-          color: #e5e7eb;
-        }
-
-        :root {
-          --bg: #020617;
-          --bg2: #02081a;
-          --border: rgba(148, 163, 184, 0.4);
-          --accent-blue: #38bdf8;
-          --accent-green: #22c55e;
-          --accent-gold: #fbbf24;
-          --text-main: #e5e7eb;
-          --text-soft: #9ca3af;
-          --radius-xl: 24px;
-          --radius-lg: 18px;
-          --radius-md: 12px;
-          --transition-med: 260ms ease-out;
-          --transition-slow: 3s ease;
-        }
-
-        /* ================== ОБОЛОЧКА ХАБА ================== */
-        .hub-shell {
-          position: relative;
-          z-index: 1;
-          min-height: 100vh;
-          padding: 20px 24px 24px;
-          display: flex;
-          flex-direction: column;
-          background: radial-gradient(circle at top, #020617 0, #020617 60%, #000);
-          transition: opacity 400ms ease, transform 400ms ease;
-        }
-
-        .hub-shell--hidden {
-          opacity: 0;
-          transform: translateY(40px);
-          pointer-events: none;
-          display: none;
-        }
-
-        .hub-top {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 18px;
-        }
-
-        .hub-brand {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .hub-logo {
-          width: 38px;
-          height: 38px;
-          border-radius: 999px;
-          background: conic-gradient(
-            from 210deg,
-            #38bdf8,
-            #22c55e,
-            #fbbf24,
-            #ec4899,
-            #38bdf8
-          );
-          padding: 2px;
-          box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
-        }
-
-        .hub-logo-inner {
-          width: 100%;
-          height: 100%;
-          border-radius: inherit;
-          background: radial-gradient(circle at 30% 20%, #0f172a, #020617 70%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #e5e7eb;
-          font-weight: 800;
-          font-size: 18px;
-          letter-spacing: 0.08em;
-        }
-
-        .hub-brand-text-main {
-          font-size: 18px;
-          font-weight: 800;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-        }
-
-        .hub-brand-text-sub {
-          font-size: 10px;
-          color: var(--text-soft);
-          text-transform: uppercase;
-          letter-spacing: 0.18em;
-        }
-
-        .hub-brand-stack {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-
-        .hub-tag {
-          border-radius: 999px;
-          padding: 6px 10px;
-          border: 1px solid var(--border);
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          color: var(--text-soft);
-        }
-
-        .hub-center {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          min-height: 0;
-        }
-
-        .hub-title {
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-        }
-
-        .hub-subtitle {
-          margin-top: 4px;
-          font-size: 12px;
-          color: var(--text-soft);
-          max-width: 520px;
-        }
-
-        .hub-bottom {
-          margin-top: 16px;
-          font-size: 10px;
-          color: var(--text-soft);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .hub-bottom-pill {
-          border-radius: 999px;
-          padding: 3px 8px;
-          border: 1px solid var(--border);
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-        }
-
-        /* ================== ТРИ ОКНА ================== */
-        .hub-windows-row {
-          flex: 1;
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 16px;
-          min-height: 0;
-          margin-top: 10px;
-        }
-
-        @media (max-width: 1024px) {
-          .hub-windows-row {
-            grid-template-columns: minmax(0, 1fr);
-          }
-        }
-
-        .hub-window { aspect-ratio:16/9;
-          position: relative;
-          border-radius: var(--radius-xl);
-          border: 1px solid var(--border);
-          background: radial-gradient(
-              circle at top left,
-              rgba(56, 189, 248, 0.18),
-              transparent 55%
-            ),
-            #020617;
-          padding: 14px 14px 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          cursor: pointer;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
-          transition: transform var(--transition-med),
-            box-shadow var(--transition-med), border-color var(--transition-med),
-            background var(--transition-med);
-        }
-
-        .hub-window--site {
-          border-color: rgba(56, 189, 248, 0.9);
-        }
-
-        .hub-window--donate {
-          border-color: rgba(34, 197, 94, 0.9);
-          background: radial-gradient(
-              circle at top left,
-              rgba(34, 197, 94, 0.18),
-              transparent 55%
-            ),
-            #020617;
-        }
-
-        .hub-window--auction {
-          border-color: rgba(251, 191, 36, 0.9);
-          background: radial-gradient(
-              circle at top left,
-              rgba(251, 191, 36, 0.18),
-              transparent 55%
-            ),
-            #020617;
-        }
-
-        .hub-window:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 32px 80px rgba(0, 0, 0, 0.95);
-        }
-
-        .hub-window-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-        }
-
-        .hub-window-label {
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          color: var(--text-soft);
-        }
-
-        .hub-window-title {
-          margin-top: 2px;
-          font-size: 16px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-        }
-
-        .hub-window-title--blue {
-          color: var(--accent-blue);
-        }
-
-        .hub-window-title--green {
-          color: var(--accent-green);
-        }
-
-        .hub-window-title--gold {
-          color: var(--accent-gold);
-        }
-
-        .hub-window-badge {
-          border-radius: 999px;
-          padding: 4px 9px;
-          border: 1px solid var(--border);
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          color: var(--text-soft);
-        }
-
-        .hub-window-body {
-          margin-top: 8px;
-          border-radius: var(--radius-lg);
-          border: 1px solid rgba(31, 41, 55, 0.9);
-          background: #020617;
-          padding: 9px 10px 10px;
-          font-size: 12px;
-          color: var(--text-soft);
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .hub-window-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 6px;
-        }
-
-        .hub-window-row-label {
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: 0.16em;
-          color: var(--text-soft);
-        }
-
-        .hub-window-row-value {
-          font-size: 12px;
-          color: var(--text-main);
-        }
-
-        .hub-window-footer {
-          margin-top: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 11px;
-          color: var(--text-soft);
-        }
-
-        .hub-window-arrow {
-          font-size: 18px;
-          transition: transform 160ms ease-out;
-        }
-
-        .hub-window:hover .hub-window-arrow {
-          transform: translateX(4px);
-        }
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    /* ХАБ */
+    #hub {
+      position: fixed;
+      inset: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .hub-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+    .hub-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .hub-item:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ЭКРАН САЙТА */
+    #site {
+      position: fixed;
+      inset: 0;
+      background: #020617;
+      display: none;
+      flex-direction: column;
+    }
+    #site.active {
+      display: flex;
+    }
+    .site-header {
+      padding: 12px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+    }
+    .site-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* ЧАТ */
+    .chat {
+      background: #0f172a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    .msg {
+      background: #111827;
+      border: 1px solid #1f2937;
+      padding: 6px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .msg .meta {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+    .msg .text {
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+    #chat-input {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    #chat-msg {
+      grid-column: 1/3;
+      resize: none;
+      height: 40px;
+    }
+    #chat-send {
+      grid-column: 1/3;
+      padding: 8px;
+      background: #22c55e;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
-  <div class="hub-shell">
-    <div class="hub-top">
-      <div class="hub-brand">
-        <div class="hub-logo">
-          <div class="hub-logo-inner">S</div>
-        </div>
-        <div class="hub-brand-stack">
-          <div class="hub-brand-text-main">СайтСотика</div>
-          <div class="hub-brand-text-sub">Хаб</div>
-        </div>
-      </div>
-      <div class="hub-tag">v4</div>
-    </div>
 
-    <div class="hub-center">
-      <div class="hub-title">Добро пожаловать</div>
-      <div class="hub-subtitle">Выберите раздел для продолжения</div>
-    </div>
-
-    <div class="hub-bottom">
-      <div class="hub-bottom-pill">Готово к использованию</div>
-    </div>
-
-    <div class="hub-windows-row">
-      <div class="hub-window hub-window--site">
-        <div class="hub-window-header">
-          <div>
-            <div class="hub-window-label">Раздел</div>
-            <div class="hub-window-title hub-window-title--blue">Сайт</div>
-          </div>
-          <div class="hub-window-badge">Основной</div>
-        </div>
-        <div class="hub-window-body">
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Статус</div>
-            <div class="hub-window-row-value">Активен</div>
-          </div>
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Версия</div>
-            <div class="hub-window-row-value">4.0</div>
-          </div>
-        </div>
-        <div class="hub-window-footer">
-          <div>Открыть</div>
-          <div class="hub-window-arrow">→</div>
-        </div>
-      </div>
-
-      <div class="hub-window hub-window--donate">
-        <div class="hub-window-header">
-          <div>
-            <div class="hub-window-label">Раздел</div>
-            <div class="hub-window-title hub-window-title--green">Донат</div>
-          </div>
-          <div class="hub-window-badge">Поддержка</div>
-        </div>
-        <div class="hub-window-body">
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Статус</div>
-            <div class="hub-window-row-value">Доступен</div>
-          </div>
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Способы</div>
-            <div class="hub-window-row-value">5+</div>
-          </div>
-        </div>
-        <div class="hub-window-footer">
-          <div>Поддержать</div>
-          <div class="hub-window-arrow">→</div>
-        </div>
-      </div>
-
-      <div class="hub-window hub-window--auction">
-        <div class="hub-window-header">
-          <div>
-            <div class="hub-window-label">Раздел</div>
-            <div class="hub-window-title hub-window-title--gold">Аукцион</div>
-          </div>
-          <div class="hub-window-badge">Скоро</div>
-        </div>
-        <div class="hub-window-body">
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Статус</div>
-            <div class="hub-window-row-value">В разработке</div>
-          </div>
-          <div class="hub-window-row">
-            <div class="hub-window-row-label">Запуск</div>
-            <div class="hub-window-row-value">Q3 2024</div>
-          </div>
-        </div>
-        <div class="hub-window-footer">
-          <div>Подробнее</div>
-          <div class="hub-window-arrow">→</div>
-        </div>
-      </div>
-    </div>
+<!-- ХАБ -->
+<div id="hub">
+  <h1>Хаб Сотика</h1>
+  <div class="hub-grid">
+    <div class="hub-item" id="open-site">Сайт</div>
+    <div class="hub-item" id="open-donate">Донат</div>
+    <div class="hub-item" id="open-auction">Аукцион</div>
   </div>
+</div>
+
+<!-- САЙТ -->
+<div id="site">
+  <div class="site-header">
+    <div>СайтСотика</div>
+    <button id="back">Назад</button>
+  </div>
+
+  <div class="site-body">
+    <iframe id="frame" src="siteofsotik/index.html"></iframe>
+  </div>
+</div>
+
+<script>
+  // ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
+  const hub = document.getElementById("hub");
+  const site = document.getElementById("site");
+
+  document.getElementById("open-site").onclick = () => {
+    hub.style.display = "none";
+    site.classList.add("active");
+  };
+  document.getElementById("back").onclick = () => {
+    site.classList.remove("active");
+    hub.style.display = "flex";
+  };
+
+  // ЧАТ
+  const db = supabase.createClient(
+    "https://xdohisilunbnfqbuglwi.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  );
+
+  const chatMessages = document.getElementById("chat-messages");
+
+  function render(m) {
+    const div = document.createElement("div");
+    div.className = "msg";
+    div.innerHTML = `
+      <div class="meta">${m.name} ${m.surname}</div>
+      <div class="text">${m.text}</div>
+    `;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function load() {
+    const { data } = await db.from("messages").select("*").order("id");
+    chatMessages.innerHTML = "";
+    data.forEach(render);
+  }
+  load();
+
+  db.channel("msg")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, p => render(p.new))
+    .subscribe();
+
+  document.getElementById("chat-send").onclick = async () => {
+    const name = document.getElementById("chat-name").value;
+    const surname = document.getElementById("chat-surname").value;
+    const text = document.getElementById("chat-msg").value;
+
+    if (!text.trim()) return;
+
+    await db.from("messages").insert([{ name, surname, text }]);
+    document.getElementById("chat-msg").value = "";
+  };
+</script>
+
 </body>
-  <!-- Полноценное окно СайтСотика -->
-  <div class="sitesotik-app">
-    <div class="sitesotik-header">
-      <div class="sitesotik-back">← Назад</div>
-      <div class="sitesotik-header-center">
-        <div class="sitesotik-header-logo-circle">
-          <div class="sitesotik-header-logo-inner">S</div>
-        </div>
-        <div class="sitesotik-header-title">СайтСотика</div>
-      </div>
-      <div class="sitesotik-nav">
-        <div class="sitesotik-nav-list">
-          <div class="sitesotik-nav-btn">Главная</div>
-          <div class="sitesotik-nav-btn">Обо мне</div>
-          <div class="sitesotik-nav-btn">Игры</div>
-          <div class="sitesotik-nav-btn">Команда</div>
-          <div class="sitesotik-nav-btn">Партнеры</div>
-        </div>
-      </div>
-    </div>
-    <div class="sitesotik-body">
-      <div id="sitesotik-content" class="sitesotik-content">
-        <!-- Контент будет загружен динамически -->
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Логика открытия окон
-    document.addEventListener('DOMContentLoaded', () => {
-      const hubShell = document.querySelector('.hub-shell');
-      const sitesotikApp = document.querySelector('.sitesotik-app');
-      const sitesotikBack = document.querySelector('.sitesotik-back');
-      const siteWindow = document.querySelector('.hub-window--site');
-      const contentContainer = document.getElementById('sitesotik-content');
-      const navButtons = document.querySelectorAll('.sitesotik-nav-btn');
-
-      // Открытие окна Сайт
-      siteWindow.addEventListener('click', () => {
-        hubShell.classList.add('hub-shell--hidden');
-        sitesotikApp.classList.add('sitesotik-app--active');
-        loadContent('index.html');
-      });
-
-      // Закрытие окна Сайт
-      sitesotikBack.addEventListener('click', () => {
-        hubShell.classList.remove('hub-shell--hidden');
-        sitesotikApp.classList.remove('sitesotik-app--active');
-      });
-
-      // Заглушка для других окон
-      document.querySelectorAll('.hub-window:not(.hub-window--site)').forEach(window => {
-        window.addEventListener('click', () => {
-          alert('Раздел в разработке');
-        });
-      });
-
-      // Настройка навигации
-      const navMap = {
-        'Главная': 'index.html',
-        'Обо мне': 'about/index.html',
-        'Игры': 'games/index.html',
-        'Команда': 'team/index.html',
-        'Партнеры': 'partners.html'
-      };
-      
-      // Функция для установки активного пункта
-      function setActiveButton(page) {
-        navButtons.forEach(btn => {
-          const pageForBtn = navMap[btn.textContent];
-          if (pageForBtn === page) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-      }
-
-      navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const page = navMap[button.textContent];
-          if (page) {
-            loadContent(page);
-            setActiveButton(page);
-          }
-        });
-      });
-
-      // Функция загрузки контента
-      function loadContent(page) {
-        fetch(`siteofsotik/${page}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`Ошибка загрузки: ${response.status}`);
-            }
-            return response.text();
-          })
-          .then(html => {
-            contentContainer.innerHTML = html;
-            // Устанавливаем активный пункт после загрузки
-            setActiveButton(page);
-          })
-          .catch(error => {
-            console.error('Ошибка загрузки контента:', error);
-            contentContainer.innerHTML = '<div class="sitesotik-error">Ошибка загрузки страницы. Попробуйте позже.</div>';
-          });
-      }
-      
-      // Устанавливаем 'Главная' активной при открытии
-      setActiveButton('index.html');
-    });
-  </script>
 </html>
