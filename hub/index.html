@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хаб</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .hub-header {
+            background-color: #2d2d2d;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #444;
+        }
+        .windows-container {
+            display: flex;
+            flex: 1;
+            padding: 10px;
+            gap: 10px;
+        }
+        .window {
+            flex: 1;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .window-header {
+            background-color: #3c3c3c;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid #444;
+        }
+        .window-content {
+            flex: 1;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .minimize-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff5f57;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: none;
+        }
+        .window.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            border-radius: 0;
+        }
+        .window.fullscreen .minimize-btn {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="hub-header">
+        <h1>Хаб</h1>
+    </div>
+    <div class="windows-container">
+        <div class="window" data-index="0">
+            <div class="window-header">Окно 1</div>
+            <div class="window-content">
+                <div class="minimize-btn" onclick="minimizeWindow(0)"></div>
+                <iframe src="about:blank"></iframe>
+            </div>
+        </div>
+        <div class="window" data-index="1">
+            <div class="window-header">Окно 2</div>
+            <div class="window-content">
+                <div class="minimize-btn" onclick="minimizeWindow(1)"></div>
+                <iframe src="about:blank"></iframe>
+            </div>
+        </div>
+        <div class="window" data-index="2">
+            <div class="window-header">Окно 3</div>
+            <div class="window-content">
+                <div class="minimize-btn" onclick="minimizeWindow(2)"></div>
+                <iframe src="about:blank"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Массив для хранения состояния окон
+        const windowStates = [false, false, false]; // false = обычное, true = полноэкранный
+
+        // Обработчик клика по окну
+        document.querySelectorAll('.window').forEach(window => {
+            window.addEventListener('click', function(e) {
+                // Проверяем, был ли клик по кнопке сворачивания
+                if (e.target.classList.contains('minimize-btn')) return;
+                
+                const index = parseInt(this.getAttribute('data-index'));
+                toggleFullscreen(index);
+            });
+        });
+
+        // Функция переключения полноэкранного режима
+        function toggleFullscreen(index) {
+            const window = document.querySelector(`.window[data-index="${index}"]`);
+            
+            if (windowStates[index]) {
+                // Выходим из полноэкранного режима
+                window.classList.remove('fullscreen');
+                windowStates[index] = false;
+            } else {
+                // Входим в полноэкранный режим
+                window.classList.add('fullscreen');
+                windowStates[index] = true;
+            }
+        }
+
+        // Функция сворачивания окна
+        function minimizeWindow(index) {
+            const window = document.querySelector(`.window[data-index="${index}"]`);
+            window.classList.remove('fullscreen');
+            windowStates[index] = false;
+        }
+
+        // Загрузка URL в iframe (можно вызывать извне)
+        function loadUrlInWindow(index, url) {
+            const iframe = document.querySelectorAll('iframe')[index];
+            iframe.src = url;
+        }
+    </script>
+</body>
+</html>
