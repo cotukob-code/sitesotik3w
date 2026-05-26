@@ -243,6 +243,42 @@
         <Execute>
           <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel logs https://sitesotik.vercel.app" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git diff public/index.html" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add public/index.html &amp;&amp; git commit -m &quot;Удаление чата и Discord из интерфейса хаба&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add public/index.html; git commit -m &quot;Удаление чата и Discord из интерфейса хаба&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\sitesotik&quot; &quot;C:\laragon\www\sitesotik\donate&quot; &quot;C:\laragon\www\sitesotik\auction&quot; &quot;C:\laragon\www\sitesotik\common&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\sitesotik&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate&quot;; mkdir &quot;C:\laragon\www\sitesotik\auction&quot;; mkdir &quot;C:\laragon\www\sitesotik\common&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\donate\banks&quot; &quot;C:\laragon\www\sitesotik\donate\qr&quot; &quot;C:\laragon\www\sitesotik\donate\assets&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\donate\banks&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate\qr&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate\assets&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add sitesotik/index.html; git status; git diff --staged" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git diff --staged sitesotik/index.html" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Добавлена возможность ввода никнейма и фамилии в чате с форматированием отображения&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Обновлён placeholder поля ввода имени в чате: убрано слово \&quot;Ваш\&quot; для более лаконичного отображения&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git commit -m &quot;Обновлён placeholder поля ввода имени в чате: убрано слово 'Ваш' для более лаконичного отображения&quot;" />
+        </Execute>
       </list>
     </option>
   </component>
