@@ -1,0 +1,1282 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Чат + Донаты v3</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --panel: #020817;
+            --border: #1f2937;
+            --accent: #3b82f6;
+            --accent-soft: rgba(59,130,246,0.15);
+            --accent-strong: #60a5fa;
+            --text: #e5e7eb;
+            --text-soft: #9ca3af;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow: 0 18px 45px rgba(0,0,0,0.7);
+            --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+        }
+
+        body {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .app {
+            width: 420px;
+            max-width: 100%;
+            background: radial-gradient(circle at top left, #020617, #020617 55%, #020617 100%);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(31,41,55,0.95);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .app-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(31,41,55,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .app-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            background: radial-gradient(circle at 30% 20%, #4ade80, #22c55e 40%, #16a34a 70%, #166534 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #022c22;
+            box-shadow: 0 0 0 1px rgba(34,197,94,0.6), 0 0 30px rgba(34,197,94,0.5);
+        }
+
+        .title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: var(--text-soft);
+        }
+
+        .app-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.9);
+            background: rgba(15,23,42,0.98);
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .pill-live {
+            border-color: rgba(34,197,94,0.8);
+            background: rgba(22,163,74,0.15);
+            color: #bbf7d0;
+        }
+
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.4);
+        }
+
+        .app-body {
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            gap: 8px;
+        }
+
+        .chat-panel {
+            border-radius: var(--radius-md);
+            background: radial-gradient(circle at top, #020617, #020617 40%, #020617 100%);
+            border: 1px solid rgba(31,41,55,0.95);
+            display: flex;
+            flex-direction: column;
+            height: 320px;
+            min-height: 260px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 6px 6px 8px;
+            overflow-y: auto;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(55,65,81,0.9);
+            border-radius: 999px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 5px;
+            animation: msgIn 0.18s ease-out;
+        }
+
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 20%, #4ade80, #22c55e 40%, #16a34a 70%, #166534 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #022c22;
+            flex-shrink: 0;
+        }
+
+        .chat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 1px;
+        }
+
+        .chat-username {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .chat-time {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        .chat-text {
+            font-size: 12px;
+            color: var(--text);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .chat-input-block {
+            border-top: 1px solid rgba(31,41,55,0.95);
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            padding: 6px 8px;
+            font-size: 12px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .chat-input:focus {
+            border-color: rgba(59,130,246,0.9);
+            box-shadow: 0 0 0 1px rgba(59,130,246,0.7);
+            background: #020617;
+        }
+
+        .chat-send-btn {
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(59,130,246,0.9);
+            background: radial-gradient(circle at top left, #3b82f6, #1d4ed8);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .chat-send-btn-icon {
+            font-size: 13px;
+        }
+
+        .chat-extra-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chat-name-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 7px 0 0;
+            font-size: 10px;
+            color: var(--text-soft);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .chat-name-toggle input {
+            accent-color: #3b82f6;
+        }
+
+        .name-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .chat-username-input {
+            flex: 1;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            padding: 4px 6px;
+            font-size: 11px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .chat-username-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .chat-username-input:focus {
+            border-color: rgba(59,130,246,0.9);
+            box-shadow: 0 0 0 1px rgba(59,130,246,0.7);
+            background: #020617;
+        }
+
+        .chat-donate-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 0;
+            font-size: 10px;
+            color: var(--text-soft);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .chat-donate-toggle input {
+            accent-color: #22c55e;
+        }
+
+        .chat-hint {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        .donate-panel {
+            border-radius: var(--radius-md);
+            background: radial-gradient(circle at top, #020617, #020617 40%, #020617 100%);
+            border: 1px solid rgba(31,41,55,0.95);
+            padding: 7px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .donate-panel.hidden {
+            display: none;
+        }
+
+        .donate-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .donate-header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .donate-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .donate-subtitle {
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .donate-header-right {
+            display: flex;
+            gap: 4px;
+        }
+
+        .donate-header-right .donate-tab {
+            padding: 0;
+            width: 46px;
+            height: 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donate-header-right .donate-tab svg {
+            display: block;
+        }
+
+        .donate-header-right text {
+            fill: #9ca3af;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .donate-header-right .donate-tab.active {
+            border-color: rgba(59,130,246,0.9);
+            background: rgba(30,64,175,0.9);
+        }
+
+        .donate-header-right .donate-tab.active text {
+            fill: #e5e7eb;
+        }
+
+        .donate-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .donate-amount-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .donate-amount-input {
+            flex: 1;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            padding: 4px 6px;
+            font-size: 12px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .donate-amount-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .donate-amount-input:focus {
+            border-color: rgba(59,130,246,0.9);
+            box-shadow: 0 0 0 1px rgba(59,130,246,0.7);
+            background: #020617;
+        }
+
+        .donate-presets {
+            display: flex;
+            gap: 3px;
+        }
+
+        .donate-preset-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 3px 4px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            font-size: 10px;
+            color: var(--text-soft);
+            cursor: pointer;
+        }
+
+        .donate-bottom-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .donate-anon-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .donate-anon-row input {
+            accent-color: #3b82f6;
+        }
+
+        .donate-bank-card {
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(55,65,81,0.95);
+            background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(15,23,42,0.98));
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .donate-bank-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .donate-bank-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .donate-bank-name {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .donate-bank-type {
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .donate-bank-logo {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .method-buttons-right {
+            display: flex;
+            gap: 4px;
+        }
+
+        .method-buttons-right .donate-method-tab {
+            padding: 0;
+            width: 40px;
+            height: 22px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .method-buttons-right .donate-method-tab svg {
+            display: block;
+        }
+
+        .method-buttons-right .donate-method-tab text {
+            fill: #9ca3af;
+            font-size: 8px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .method-buttons-right .donate-method-tab.active {
+            border-color: rgba(59,130,246,0.9);
+            background: rgba(30,64,175,0.9);
+        }
+
+        .method-buttons-right .donate-method-tab.active text {
+            fill: #e5e7eb;
+        }
+
+        .donate-bank-number-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .donate-bank-number {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+        }
+
+        .donate-copy-btn {
+            padding: 3px 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.95);
+            background: rgba(15,23,42,0.98);
+            font-size: 10px;
+            color: var(--text-soft);
+            cursor: pointer;
+        }
+
+        .donate-copy-btn.copied {
+            border-color: rgba(34,197,94,0.9);
+            color: #bbf7d0;
+            background: rgba(22,163,74,0.2);
+        }
+
+        .donate-bank-hint-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        .donate-bank-link {
+            padding: 2px 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(59,130,246,0.9);
+            background: rgba(15,23,42,0.98);
+            font-size: 9px;
+            color: #bfdbfe;
+            text-decoration: none;
+        }
+
+        .donate-qr-box {
+            margin-top: 4px;
+            border-radius: var(--radius-sm);
+            border: 1px dashed rgba(75,85,99,0.9);
+            background: rgba(15,23,42,0.9);
+            padding: 4px;
+            font-size: 9px;
+            text-align: center;
+            color: var(--text-soft);
+        }
+
+        .donate-submit-btn {
+            margin-top: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(34,197,94,0.9);
+            background: radial-gradient(circle at top left, #22c55e, #16a34a);
+            color: #022c22;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .donate-total {
+            font-size: 10px;
+            color: var(--text-soft);
+            text-align: right;
+        }
+
+        .feed-panel {
+            border-radius: var(--radius-md);
+            background: radial-gradient(circle at top, #020617, #020617 40%, #020617 100%);
+            border: 1px solid rgba(31,41,55,0.95);
+            padding: 7px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .feed-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .feed-subtitle {
+            font-size: 10px;
+            color: var(--text-soft);
+        }
+
+        .feed-list {
+            max-height: 160px;
+            overflow-y: auto;
+            margin-top: 4px;
+        }
+
+        .feed-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .feed-list::-webkit-scrollbar-thumb {
+            background: rgba(55,65,81,0.9);
+            border-radius: 999px;
+        }
+
+        .feed-item {
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(55,65,81,0.95);
+            background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(15,23,42,0.98));
+            padding: 5px 6px;
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .feed-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .feed-item-user {
+            font-weight: 600;
+        }
+
+        .feed-item-amount {
+            font-weight: 700;
+            color: #bbf7d0;
+        }
+
+        .feed-item-comment {
+            margin-top: 2px;
+            color: var(--text);
+        }
+
+        .feed-item-meta {
+            margin-top: 2px;
+            color: var(--text-muted);
+            font-size: 9px;
+        }
+
+        .feed-empty {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 16px;
+            transform: translateX(-50%) translateY(8px);
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(34,197,94,0.9);
+            background: rgba(15,23,42,0.98);
+            color: #bbf7d0;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+            z-index: 9999;
+        }
+
+        .toast.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-error {
+            border-color: rgba(239,68,68,0.9);
+            color: #fecaca;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div class="app-header-left">
+            <div class="logo">S</div>
+            <div class="title-block">
+                <div class="title">Чат + Донаты</div>
+                <div class="subtitle">Сбер · Т‑Банк · ВТБ · ЮMoney</div>
+            </div>
+        </div>
+        <div class="app-header-right">
+            <div class="pill pill-live">
+                <span class="dot-live"></span>
+                <span>В эфире</span>
+            </div>
+            <div class="pill" id="viewersPill">7 зрителей</div>
+        </div>
+    </header>
+
+    <div class="app-body">
+        <section class="chat-panel">
+            <div id="chatMessages" class="chat-messages"></div>
+
+            <div class="chat-input-block">
+                <div class="chat-input-row">
+                    <input id="chatInput" class="chat-input" type="text" placeholder="Сообщение в чат">
+                    <button id="chatSendBtn" class="chat-send-btn">
+                        <span class="chat-send-btn-icon">➤</span>
+                        <span>OK</span>
+                    </button>
+                </div>
+
+                <div class="chat-extra-row">
+                    <label class="chat-name-toggle">
+                        <input id="useFullName" type="checkbox">
+                        <span>Имя + фамилия (рус)</span>
+                    </label>
+
+                    <div class="name-row" id="fullNameRow" style="display:none;">
+                        <input id="firstName" class="chat-username-input" type="text" placeholder="Имя (рус)">
+                        <input id="lastName" class="chat-username-input" type="text" placeholder="Фамилия (рус)">
+                    </div>
+
+                    <div class="name-row" id="nickRow">
+                        <input id="nickname" class="chat-username-input" type="text" placeholder="Ник (англ)">
+                    </div>
+
+                    <label class="chat-donate-toggle">
+                        <input id="donateToggle" type="checkbox">
+                        <span>Донат</span>
+                    </label>
+
+                    <div class="chat-hint">Имя/фамилия — только русские буквы. Ник — только латиница/цифры/_/-</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="donatePanel" class="donate-panel hidden">
+            <div class="donate-header-row">
+                <div class="donate-header-left">
+                    <div class="donate-title">Донат стримеру</div>
+                    <div class="donate-subtitle">Выберите банк и способ перевода</div>
+                </div>
+
+                <div class="donate-header-right">
+                    <button class="donate-tab active" data-bank="sber">
+                        <svg width="46" height="18" viewBox="0 0 46 18">
+                            <rect x="0.5" y="0.5" width="45" height="17" rx="8" ry="8" fill="none" stroke="rgba(75,85,99,0.9)" />
+                            <text x="23" y="12" text-anchor="middle" font-size="9">СБЕР</text>
+                        </svg>
+                    </button>
+
+                    <button class="donate-tab" data-bank="tinkoff">
+                        <svg width="46" height="18" viewBox="0 0 46 18">
+                            <rect x="0.5" y="0.5" width="45" height="17" rx="8" ry="8" fill="none" stroke="rgba(75,85,99,0.9)" />
+                            <text x="23" y="12" text-anchor="middle" font-size="9">Т‑БАНК</text>
+                        </svg>
+                    </button>
+
+                    <button class="donate-tab" data-bank="vtb">
+                        <svg width="46" height="18" viewBox="0 0 46 18">
+                            <rect x="0.5" y="0.5" width="45" height="17" rx="8" ry="8" fill="none" stroke="rgba(75,85,99,0.9)" />
+                            <text x="23" y="12" text-anchor="middle" font-size="9">ВТБ</text>
+                        </svg>
+                    </button>
+
+                    <button class="donate-tab" data-bank="yoomoney">
+                        <svg width="46" height="18" viewBox="0 0 46 18">
+                            <rect x="0.5" y="0.5" width="45" height="17" rx="8" ry="8" fill="none" stroke="rgba(75,85,99,0.9)" />
+                            <text x="23" y="12" text-anchor="middle" font-size="9">ЮМ</text>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="donate-row">
+                <div class="donate-amount-row">
+                    <input id="donateAmount" class="donate-amount-input" type="number" min="10" step="10" placeholder="Сумма, ₽">
+                    <div class="donate-presets">
+                        <button class="donate-preset-btn" data-amount="50">50</button>
+                        <button class="donate-preset-btn" data-amount="100">100</button>
+                        <button class="donate-preset-btn" data-amount="300">300</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="donate-bottom-row">
+                <div class="donate-anon-row">
+                    <label>
+                        <input id="donateAnon" type="checkbox"> Анонимно
+                    </label>
+                    <span>Переводите через приложение банка</span>
+                </div>
+
+                <div class="donate-bank-card">
+                    <div class="donate-bank-header">
+                        <div class="donate-bank-main">
+                            <div id="bankName" class="donate-bank-name">Сбербанк</div>
+                            <div id="bankType" class="donate-bank-type">Перевод по номеру телефона</div>
+                        </div>
+
+                        <div class="method-buttons-right">
+                            <button class="donate-method-tab active" data-method="phone">
+                                <svg width="32" height="14" viewBox="0 0 32 14">
+                                    <rect x="0.5" y="0.5" width="31" height="13" rx="6.5" ry="6.5" fill="none" stroke="rgba(75,85,99,0.9)" stroke-width="1"/>
+                                    <text x="16" y="9" text-anchor="middle">TEL</text>
+                                </svg>
+                            </button>
+                            <button class="donate-method-tab" data-method="card">
+                                <svg width="32" height="14" viewBox="0 0 32 14">
+                                    <rect x="0.5" y="0.5" width="31" height="13" rx="6.5" ry="6.5" fill="none" stroke="rgba(75,85,99,0.9)" stroke-width="1"/>
+                                    <text x="16" y="9" text-anchor="middle">CARD</text>
+                                </svg>
+                            </button>
+                            <button class="donate-method-tab" data-method="qr">
+                                <svg width="32" height="14" viewBox="0 0 32 14">
+                                    <rect x="0.5" y="0.5" width="31" height="13" rx="6.5" ry="6.5" fill="none" stroke="rgba(75,85,99,0.9)" stroke-width="1"/>
+                                    <text x="16" y="9" text-anchor="middle">QR</text>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="bankLogo" class="donate-bank-logo">₽</div>
+                    </div>
+
+                    <div class="donate-bank-number-row">
+                        <div id="bankNumber" class="donate-bank-number">+7 900 000‑00‑00</div>
+                        <button id="copyBtn" class="donate-copy-btn">📋</button>
+                    </div>
+
+                    <div class="donate-bank-hint-row">
+                        <span id="bankHint">Скопируйте номер и вставьте в приложении Сбербанк Онлайн</span>
+                        <a id="bankLink" class="donate-bank-link" href="https://online.sberbank.ru/" target="_blank" rel="noopener noreferrer">Открыть</a>
+                    </div>
+
+                    <div id="qrBox" class="donate-qr-box" style="display:none;">
+                        QR‑код для перевода: откройте приложение банка, выберите «Оплата по QR» и наведите камеру на код на экране.
+                    </div>
+                </div>
+
+                <button id="donateSubmit" class="donate-submit-btn">
+                    <span>💸</span>
+                    <span>Я перевёл — показать донат</span>
+                </button>
+
+                <div class="donate-total">Всего собрано: <span id="donateTotal">0</span> ₽</div>
+            </div>
+        </section>
+
+        <section class="feed-panel">
+            <div class="feed-title">Лента донатов</div>
+            <div class="feed-subtitle">Синхронизировано с чатом</div>
+            <div id="feedList" class="feed-list">
+                <div id="feedEmpty" class="feed-empty">Пока донатов нет</div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="toast" class="toast">
+    <span id="toastText">Текст</span>
+</div>
+
+<script>
+(function() {
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+
+    const useFullName = document.getElementById('useFullName');
+    const fullNameRow = document.getElementById('fullNameRow');
+    const nickRow = document.getElementById('nickRow');
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const nickname = document.getElementById('nickname');
+
+    const donateToggle = document.getElementById('donateToggle');
+    const donatePanel = document.getElementById('donatePanel');
+
+    const donateAmount = document.getElementById('donateAmount');
+    const donatePresets = document.querySelectorAll('.donate-preset-btn');
+    const donateAnon = document.getElementById('donateAnon');
+    const donateTabs = document.querySelectorAll('.donate-tab');
+    const methodTabs = document.querySelectorAll('.donate-method-tab');
+
+    const bankName = document.getElementById('bankName');
+    const bankType = document.getElementById('bankType');
+    const bankLogo = document.getElementById('bankLogo');
+    const bankNumber = document.getElementById('bankNumber');
+    const bankHint = document.getElementById('bankHint');
+    const bankLink = document.getElementById('bankLink');
+    const qrBox = document.getElementById('qrBox');
+
+    const copyBtn = document.getElementById('copyBtn');
+    const donateSubmit = document.getElementById('donateSubmit');
+    const donateTotalSpan = document.getElementById('donateTotal');
+
+    const feedList = document.getElementById('feedList');
+    const feedEmpty = document.getElementById('feedEmpty');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+
+    let totalDonated = 0;
+
+    const bankConfig = {
+        sber: {
+            title: 'Сбербанк',
+            logo: '₽',
+            phone: {
+                type: 'Перевод по номеру телефона',
+                number: '+7 900 000‑00‑00',
+                hint: 'Скопируйте номер и вставьте в приложении Сбербанк Онлайн',
+                link: 'https://online.sberbank.ru/'
+            },
+            card: {
+                type: 'Перевод по номеру карты',
+                number: '2202 2000 0000 0000',
+                hint: 'Скопируйте номер карты и вставьте в приложении Сбербанк Онлайн',
+                link: 'https://online.sberbank.ru/'
+            },
+            qr: {
+                type: 'Оплата по QR‑коду',
+                number: 'QR‑код',
+                hint: 'Откройте Сбербанк Онлайн и отсканируйте QR‑код на экране',
+                link: 'https://online.sberbank.ru/'
+            }
+        },
+        tinkoff: {
+            title: 'Т‑Банк',
+            logo: '₸',
+            phone: {
+                type: 'Перевод по номеру телефона',
+                number: '+7 901 000‑00‑00',
+                hint: 'Скопируйте номер и вставьте в приложении Т‑Банк',
+                link: 'https://www.tbank.ru/'
+            },
+            card: {
+                type: 'Перевод по номеру карты',
+                number: '5536 9100 0000 0000',
+                hint: 'Скопируйте номер карты и вставьте в приложении Т‑Банк',
+                link: 'https://www.tbank.ru/'
+            },
+            qr: {
+                type: 'Оплата по QR‑коду',
+                number: 'QR‑код',
+                hint: 'Откройте приложение Т‑Банк и отсканируйте QR‑код',
+                link: 'https://www.tbank.ru/'
+            }
+        },
+        vtb: {
+            title: 'ВТБ',
+            logo: 'V',
+            phone: {
+                type: 'Перевод по номеру телефона',
+                number: '+7 902 000‑00‑00',
+                hint: 'Скопируйте номер и вставьте в приложении ВТБ Онлайн',
+                link: 'https://online.vtb.ru/'
+            },
+            card: {
+                type: 'Перевод по номеру карты',
+                number: '4272 3000 0000 0000',
+                hint: 'Скопируйте номер карты и вставьте в приложении ВТБ Онлайн',
+                link: 'https://online.vtb.ru/'
+            },
+            qr: {
+                type: 'Оплата по QR‑коду',
+                number: 'QR‑код',
+                hint: 'Откройте приложение ВТБ и отсканируйте QR‑код',
+                link: 'https://online.vtb.ru/'
+            }
+        },
+        yoomoney: {
+            title: 'ЮMoney',
+            logo: 'Ю',
+            phone: {
+                type: 'Перевод по номеру телефона',
+                number: '+7 903 000‑00‑00',
+                hint: 'Скопируйте номер и вставьте в приложении ЮMoney',
+                link: 'https://yoomoney.ru/'
+            },
+            card: {
+                type: 'Перевод по номеру кошелька',
+                number: '4100 0000 0000 000',
+                hint: 'Скопируйте номер кошелька и вставьте в приложении ЮMoney',
+                link: 'https://yoomoney.ru/'
+            },
+            qr: {
+                type: 'Оплата по QR‑коду',
+                number: 'QR‑код',
+                hint: 'Откройте приложение ЮMoney и отсканируйте QR‑код',
+                link: 'https://yoomoney.ru/'
+            }
+        }
+    };
+
+    function showToast(msg, isError) {
+        toastText.textContent = msg;
+        toast.classList.toggle('toast-error', !!isError);
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 1800);
+    }
+
+    function getDisplayName() {
+        if (donateAnon.checked) return 'Аноним';
+        if (useFullName.checked) {
+            const fn = (firstName.value || '').trim();
+            const ln = (lastName.value || '').trim();
+            const full = (fn + ' ' + ln).trim();
+            return full || 'Гость';
+        } else {
+            const nick = (nickname.value || '').trim();
+            return nick || 'Гость';
+        }
+    }
+
+    function addChatMessage(text) {
+        const user = getDisplayName();
+        const wrap = document.createElement('div');
+        wrap.className = 'chat-message';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-avatar';
+        avatar.textContent = user[0] ? user[0].toUpperCase() : 'G';
+
+        const content = document.createElement('div');
+        content.className = 'chat-content';
+
+        const meta = document.createElement('div');
+        meta.className = 'chat-meta';
+
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'chat-username';
+        nameSpan.textContent = user;
+
+        const timeSpan = document.createElement('div');
+        timeSpan.className = 'chat-time';
+        const now = new Date();
+        timeSpan.textContent = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+
+        meta.appendChild(nameSpan);
+        meta.appendChild(timeSpan);
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'chat-text';
+        textDiv.textContent = text;
+
+        content.appendChild(meta);
+        content.appendChild(textDiv);
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(content);
+
+        chatMessages.appendChild(wrap);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addFeedItem(comment, amount) {
+        const user = getDisplayName();
+        if (feedEmpty) feedEmpty.remove();
+
+        const item = document.createElement('div');
+        item.className = 'feed-item';
+
+        const header = document.createElement('div');
+        header.className = 'feed-item-header';
+
+        const userDiv = document.createElement('div');
+        userDiv.className = 'feed-item-user';
+        userDiv.textContent = user;
+
+        const amountDiv = document.createElement('div');
+        amountDiv.className = 'feed-item-amount';
+        amountDiv.textContent = amount ? + ₽ : 'Сообщение';
+
+        header.appendChild(userDiv);
+        header.appendChild(amountDiv);
+
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'feed-item-comment';
+        commentDiv.textContent = comment;
+
+        const meta = document.createElement('div');
+        meta.className = 'feed-item-meta';
+        const now = new Date();
+        meta.textContent = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+
+        item.appendChild(header);
+        item.appendChild(commentDiv);
+        item.appendChild(meta);
+
+        feedList.prepend(item);
+    }
+
+    useFullName.addEventListener('change', () => {
+        if (useFullName.checked) {
+            fullNameRow.style.display = 'flex';
+            nickRow.style.display = 'none';
+        } else {
+            fullNameRow.style.display = 'none';
+            nickRow.style.display = 'flex';
+        }
+    });
+
+    donateToggle.addEventListener('change', () => {
+        donatePanel.classList.toggle('hidden', !donateToggle.checked);
+    });
+
+    chatSendBtn.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addChatMessage(text);
+        addFeedItem(text, null);
+        chatInput.value = '';
+    });
+
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            chatSendBtn.click();
+        }
+    });
+
+    donatePresets.forEach(btn => {
+        btn.addEventListener('click', () => {
+            donateAmount.value = btn.dataset.amount || '';
+        });
+    });
+
+    function setBank(bankKey, methodKey) {
+        const bank = bankConfig[bankKey] || bankConfig.sber;
+        const method = bank[methodKey] || bank.phone;
+
+        bankName.textContent = bank.title;
+        bankType.textContent = method.type;
+        bankLogo.textContent = bank.logo;
+        bankNumber.textContent = method.number;
+        bankHint.textContent = method.hint;
+        bankLink.href = method.link;
+
+        if (methodKey === 'qr') {
+            qrBox.style.display = 'block';
+        } else {
+            qrBox.style.display = 'none';
+        }
+    }
+
+    let currentBank = 'sber';
+    let currentMethod = 'phone';
+    setBank(currentBank, currentMethod);
+
+    donateTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            donateTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentBank = tab.dataset.bank || 'sber';
+            currentMethod = 'phone';
+            methodTabs.forEach(m => m.classList.remove('active'));
+            methodTabs.forEach(m => {
+                if (m.dataset.method === 'phone') m.classList.add('active');
+            });
+            setBank(currentBank, currentMethod);
+        });
+    });
+
+    methodTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            methodTabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentMethod = btn.dataset.method || 'phone';
+            setBank(currentBank, currentMethod);
+        });
+    });
+
+    copyBtn.addEventListener('click', async () => {
+        const text = bankNumber.textContent.replace(/\s+/g, '');
+        try {
+            await navigator.clipboard.writeText(text);
+            copyBtn.classList.add('copied');
+            showToast('Скопировано');
+            setTimeout(() => copyBtn.classList.remove('copied'), 1500);
+        } catch (e) {
+            showToast('Не удалось скопировать', true);
+        }
+    });
+
+    donateSubmit.addEventListener('click', () => {
+        const amount = parseInt(donateAmount.value, 10);
+        if (!amount || amount <= 0) {
+            showToast('Укажи сумму доната', true);
+            return;
+        }
+        totalDonated += amount;
+        donateTotalSpan.textContent = totalDonated.toString();
+        addFeedItem('Поддержка стримера', amount);
+        showToast('Донат отмечен');
+        donateAmount.value = '';
+    });
+})();
+</script>
+</body>
+</html>
