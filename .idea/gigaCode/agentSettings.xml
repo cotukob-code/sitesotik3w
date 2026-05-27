@@ -306,6 +306,12 @@
         <Execute>
           <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel --prod" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git pull origin main" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel --prod" />
+        </Execute>
       </list>
     </option>
   </component>
