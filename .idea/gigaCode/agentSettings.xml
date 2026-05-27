@@ -279,6 +279,15 @@
         <Execute>
           <option name="pattern" value="git commit -m &quot;Обновлён placeholder поля ввода имени в чате: убрано слово 'Ваш' для более лаконичного отображения&quot;" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git push origin main" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="npm run build" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="npx vercel --prod" />
+        </Execute>
       </list>
     </option>
   </component>
