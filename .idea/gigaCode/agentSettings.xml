@@ -288,6 +288,15 @@
         <Execute>
           <option name="pattern" value="npx vercel --prod" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="git log --oneline -n 5" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add . &amp;&amp; git status" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add .; git status" />
+        </Execute>
       </list>
     </option>
   </component>
