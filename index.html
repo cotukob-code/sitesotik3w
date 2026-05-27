@@ -10,7 +10,8 @@
     // Инициализация Supabase клиента
     const supabaseUrl = 'https://xdohisilunbnfqbuglwi.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ';
-    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    // Используем window.supabase, чтобы избежать конфликта с локальной переменной
+    window.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
   </script>
   <style>
     body {
@@ -82,6 +83,9 @@
     const chatEl = document.getElementById('chat');
     const messageEl = document.getElementById('message');
     const usernameEl = document.getElementById('username');
+
+    // Используем window.supabase в остальном коде
+    const supabase = window.supabase;
 
     // === Загрузка сообщений ===
     async function loadMessages() {
