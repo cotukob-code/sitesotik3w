@@ -297,6 +297,15 @@
         <Execute>
           <option name="pattern" value="git add .; git status" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel --prod" />
+        </Execute>
       </list>
     </option>
   </component>

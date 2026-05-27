@@ -3,6 +3,7 @@
 <head>
 <meta charset='UTF-8'>
 <title>СайтыСотика — Хаб</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{
       box-sizing:border-box;
@@ -81,7 +82,7 @@
       .window{
         width:100%;        /* растягивается на всю ширину телефона */
         max-width:100%;    /* заполнение ширины экрана */
-        height:260px;      /* увеличенная высота */
+        height:300px;      /* увеличена высота для лучшего восприятия на мобильных */
       }
     }
   </style>
@@ -236,9 +237,14 @@
   const windows = document.querySelectorAll('.window');
   windows.forEach(w => {
     w.addEventListener('click', () => {
-      const t = w.dataset.title;
-      console.log('Открыто окно:', t);
-      // здесь можно добавить модал или переход
+      const title = w.dataset.title;
+      console.log('Открыто окно:', title);
+
+      // Перенаправление для карточки "СайтСотика"
+      if (title === 'СайтСотика') {
+        window.location.href = 'site-sotik/';
+      }
+      // Можно добавить другие условия для других карточек позже
     });
   });
 </script>
