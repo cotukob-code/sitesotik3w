@@ -2338,8 +2338,11 @@
   // Инициализация Supabase
   const supabaseUrl = 'https://xdohisilunbnfqbuglwi.supabase.co';
   const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhkb2hpc2lsdW5ibmZxYnVnbHdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjQ3MTAsImV4cCI6MjA5NDg0MDcxMH0.vUcvR-YNmO5zwcogUuTxv_GFgpBzVvZvfFypNpu3EZQ';
-  const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
+  window.supabaseClient ??= supabase.createClient(supabaseUrl, supabaseAnonKey);
+  const supabase = window.supabaseClient;
+
+  // Элементы чата
   const chatBody = document.getElementById('chatBody');
   const chatInput = document.getElementById('chatInput');
   const chatNameInput = document.getElementById('chatNameInput');
@@ -2460,13 +2463,19 @@
   });
 
   // Подписка на новые сообщения (Realtime)
-  supabase
+  const channel = supabase
     .channel('public:messages')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
       const time = new Date(payload.new.inserted_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       addMessage(payload.new.username, `${payload.new.message} <span style="color:#64748b; font-size:12px">${time}</span>`);
-    })
-    .subscribe();
+    });
+
+  // Отписываемся при перезагрузке, чтобы избежать дублирования
+  window.addEventListener('beforeunload', () => {
+    channel.unsubscribe();
+  });
+
+  channel.subscribe();
 
   // Загрузка при старте
   loadMessages();

@@ -312,6 +312,27 @@
         <Execute>
           <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel --prod" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot; &amp;&amp; mkdir js &amp;&amp; curl -o js/supabase.js https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; mkdir js; curl -o js/supabase.js https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add . &amp;&amp; git commit -m &quot;Добавлен локальный supabase.js для обхода блокировки браузером&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="git add .; git commit -m &quot;Добавлен локальный supabase.js для обхода блокировки браузером&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sitesotik/backend &amp;&amp; npm install cors express" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/backend&quot;; npm install cors express" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/backend&quot;; node server.js" />
+        </Execute>
       </list>
     </option>
   </component>
