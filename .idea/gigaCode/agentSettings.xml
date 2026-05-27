@@ -333,6 +333,15 @@
         <Execute>
           <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/backend&quot;; node server.js" />
         </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot; &amp;&amp; vercel" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; vercel" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; vercel --yes" />
+        </Execute>
       </list>
     </option>
   </component>
