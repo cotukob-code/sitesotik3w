@@ -4,344 +4,183 @@
     <option name="autoApprovedCommands">
       <list>
         <Execute>
-          <option name="pattern" value="git init &amp;&amp; git add . &amp;&amp; git status" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git init; git add .; git status" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote add origin https://github.com/cotukob-code/sitesotik3w.git; git branch -M main; git push -u origin main" />
+          <option name="pattern" value="git --version" />
         </Execute>
         <Execute>
           <option name="pattern" value="git status" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git commit -m &quot;Initial commit&quot;; git branch -M main; git push -u origin main" />
+          <option name="pattern" value="cd chat-server &amp;&amp; npm install" />
         </Execute>
         <Execute>
-          <option name="pattern" value="ls &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; || echo &quot;Файл конфигурации не существует&quot;" />
+          <option name="pattern" value="cd chat-server; if ($?) { npm install }" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Test-Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot;; if ($?) { echo &quot;Существует&quot; } else { echo &quot;Не существует&quot; }" />
+          <option name="pattern" value="cd chat-server; if ($?) { npm start }" />
         </Execute>
         <Execute>
-          <option name="pattern" value="New-Item -Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; -ItemType File -Value &quot;Listen 80\n&lt;VirtualHost *:80&gt;\n    DocumentRoot \&quot;C:/laragon/www/sitesotik\&quot;\n    ServerName sitesotik.test\n    &lt;Directory \&quot;C:/laragon/www/sitesotik\&quot;&gt;\n        Options Indexes FollowSymLinks\n        AllowOverride All\n        Require all granted\n    &lt;/Directory&gt;\n&lt;/VirtualHost&gt;&quot;" />
+          <option name="pattern" value="cd chat-server; if ($?) { node server.js }" />
         </Execute>
         <Execute>
-          <option name="pattern" value="$content = @&quot;&#10;Listen 80&#10;&lt;VirtualHost *:80&gt;&#10;    DocumentRoot &quot;C:/laragon/www/sitesotik&quot;&#10;    ServerName sitesotik.test&#10;    &lt;Directory &quot;C:/laragon/www/sitesotik&quot;&gt;&#10;        Options Indexes FollowSymLinks&#10;        AllowOverride All&#10;        Require all granted&#10;    &lt;/Directory&gt;&#10;&lt;/VirtualHost&gt;&#10;&quot;@; Set-Content -Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites/sitesotik.test.conf&quot; -Value $content" />
+          <option name="pattern" value="firebase --version" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Test-Path &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites&quot;; if ($?) { echo &quot;Папка существует&quot; } else { echo &quot;Папка не существует&quot; }" />
+          <option name="pattern" value="npm install -g firebase-tools" />
         </Execute>
         <Execute>
-          <option name="pattern" value="mkdir &quot;C:/laragon/bin/apache/httpd-2.4.62-win64-VS17/conf/sites&quot;" />
+          <option name="pattern" value="firebase login" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Add-Content -Path &quot;C:/laragon/etc/apache/laragon.conf&quot; -Value &quot;\n# Include sitesotik.test\nInclude conf/sites/sitesotik.test.conf&quot;" />
+          <option name="pattern" value="start https://console.firebase.google.com/" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Test-Path &quot;C:/laragon/etc/apache/laragon.conf&quot;; if ($?) { echo &quot;Файл существует&quot; } else { echo &quot;Файл не существует&quot; }" />
+          <option name="pattern" value="firebase login:ci" />
         </Execute>
         <Execute>
-          <option name="pattern" value="mkdir &quot;C:/laragon/etc/apache&quot;" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot; &amp;&amp; npm install firebase" />
         </Execute>
         <Execute>
-          <option name="pattern" value="echo &quot;# LARAGON AUTO CONFIGURATION - DO NOT REMOVE\nListen 80\nServerName localhost:80\n&quot; &gt; &quot;C:/laragon/etc/apache/laragon.conf&quot;" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm install firebase" />
         </Execute>
         <Execute>
-          <option name="pattern" value="mkdir &quot;C:/laragon/www/sitesotik/server&quot;" />
+          <option name="pattern" value="mkdir &quot;C:/laragon/www/sotik-chat-server/chatik/src/app/services&quot;" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Get-ChildItem -Path &quot;C:/laragon/www/sitesotik&quot; -Recurse | Sort-Object FullName" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm run build" />
         </Execute>
         <Execute>
-          <option name="pattern" value="npx html-validate --rules 'no-dup-id: error, no-duplicate-attributes: error' C:/laragon/www/sitesotik/hub/index.html" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npx ng build" />
         </Execute>
         <Execute>
-          <option name="pattern" value="npx htmlhint C:/laragon/www/sitesotik/hub/index.html" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm install -g @angular/cli" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git status &amp;&amp; git diff HEAD &amp;&amp; git log -n 3" />
+          <option name="pattern" value="nvm install 20.19.0" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git add C:/laragon/www/sitesotik/siteofsotik/index.html" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm run start" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git push" />
+          <option name="pattern" value="node --version" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git status; git diff HEAD; git log -n 3" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; pnpm install" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git add server/chat.js public/siteofsotik/index.html" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm install" />
         </Execute>
         <Execute>
-          <option name="pattern" value="git commit -m &quot;feat(chat): подключить чат к онлайн-серверу&quot;" />
+          <option name="pattern" value="cd &quot;C:/laragon/www/sotik-chat-server/chatik&quot;; npm install --force" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/backend/messages.json" />
+          <option name="pattern" value="rm -rf C:/laragon/www/sotik-chat-server/* C:/laragon/www/sotik-chat-server/.* 2&gt;/dev/null || echo 'Files removed'" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/chat.js" />
+          <option name="pattern" value="Remove-Item -Path &quot;C:/laragon/www/sotik-chat-server/*&quot;, &quot;C:/laragon/www/sotik-chat-server/.*&quot; -Recurse -Force -ErrorAction SilentlyContinue" />
         </Execute>
         <Execute>
-          <option name="pattern" value="node C:/laragon/www/sitesotik/backend/server.js" />
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server &amp;&amp; mkdir chat-server &amp;&amp; cd chat-server &amp;&amp; npm init -y &amp;&amp; npm install express mysql2 cors dotenv &amp;&amp; mkdir src public &amp;&amp; New-Item src/server.js -ItemType File &amp;&amp; New-Item public/index.html -ItemType File" />
         </Execute>
         <Execute>
-          <option name="pattern" value="curl http://localhost:3001/messages" />
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server; mkdir chat-server; cd chat-server; npm init -y; npm install express mysql2 cors dotenv; mkdir src public; New-Item src/server.js -ItemType File; New-Item public/index.html -ItemType File" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; mkdir src; mkdir public; New-Item src/server.js -ItemType File; New-Item public/index.html -ItemType File" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server &amp;&amp; echo &quot;CREATE DATABASE IF NOT EXISTS chat_db; USE chat_db; CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, content TEXT NOT NULL, user VARCHAR(100) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);&quot; &gt; init.sql" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; echo &quot;CREATE DATABASE IF NOT EXISTS chat_db; USE chat_db; CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, content TEXT NOT NULL, user VARCHAR(100) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);&quot; &gt; init.sql" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server &amp;&amp; mysql -u root &lt; init.sql" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; Get-Content init.sql | mysql -u root" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; Get-Content init.sql | &quot;C:/laragon/bin/mysql/mysql-8.0.30-winx64/bin/mysql.exe&quot; -u root" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; cmd /c &quot;type init.sql | C:\\laragon\\bin\\mysql\\mysql-8.0.30-winx64\\bin\\mysql.exe -u root&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ChildItem -Path &quot;C:/laragon/bin/mysql/&quot; -Directory" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; cmd /c &quot;type init.sql | C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysql.exe -u root&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server &amp;&amp; npm install nodemon --save-dev" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; npm install nodemon --save-dev" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; node src/server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Copy-Item &quot;C:/laragon/etc/apache2/sites-available/10-default.conf&quot; &quot;C:/laragon/etc/apache2/sites-available/sotik-chat.test.conf&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ChildItem &quot;C:/laragon/etc/apache2/sites-available/&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ChildItem &quot;C:/laragon/etc/apache2/&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-ChildItem &quot;C:/laragon/etc/apache2/sites-enabled/&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Add-Content -Path &quot;C:/Windows/System32/drivers/etc/hosts&quot; -Value &quot;127.0.0.1 sotik-chat.test&quot; -ErrorAction SilentlyContinue" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/; .\laragon.exe reload apache" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server &amp;&amp; node src/server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="netstat -ano | findstr :3000" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess -ErrorAction SilentlyContinue" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Test-Path &quot;C:/laragon/www/sotik-chat-server/chat-server/src/server.js&quot;" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; node --trace-uncaught --trace-warnings src/server.js" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; npm list express mysql2 cors dotenv" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Get-Process -Id (Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue).OwningProcess -ErrorAction SilentlyContinue" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; node src/server.js &amp; sleep 5; curl -v http://127.0.0.1:3000" />
+        </Execute>
+        <Execute>
+          <option name="pattern" value="Start-Process -NoNewWindow -FilePath &quot;node&quot; -ArgumentList &quot;src/server.js&quot; -WorkingDirectory &quot;C:/laragon/www/sotik-chat-server/chat-server&quot;; Start-Sleep -Seconds 5; curl -v http://127.0.0.1:3000" />
         </Execute>
         <Execute>
           <option name="pattern" value="Get-Process -Name node -ErrorAction SilentlyContinue" />
         </Execute>
         <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/backend/server.js" />
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server &amp;&amp; npm install @supabase/supabase-js" />
         </Execute>
         <Execute>
-          <option name="pattern" value="curl -X POST http://localhost:3001/send-message -H &quot;Content-Type: application/json&quot; -d &quot;{\&quot;name\&quot;:\&quot;Test\&quot;,\&quot;message\&quot;:\&quot;Test message\&quot;}&quot;" />
+          <option name="pattern" value="cd C:/laragon/www/sotik-chat-server/chat-server; npm install @supabase/supabase-js" />
         </Execute>
-        <Execute>
-          <option name="pattern" value="node C:/laragon/www/sitesotik/backend/server.js &amp;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Start-Process node -ArgumentList &quot;C:/laragon/www/sitesotik/backend/server.js&quot; -WindowStyle Hidden" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir -p C:/laragon/www/sitesotik/public/images &amp;&amp; curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir C:/laragon/www/sitesotik/public/images; curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="curl -o C:/laragon/www/sitesotik/public/images/og-image.jpg https://via.placeholder.com/1200x630.png?text=SiteSotika" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Тестовое изменение для проверки деплоя&quot; &amp;&amp; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Тестовое изменение для проверки деплоя&quot;; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="rm C:/laragon/www/sitesotik/public/chat.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Удаление дублирующего chat.js и очистка index.html&quot; &amp;&amp; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Удаление дублирующего chat.js и очистка index.html&quot;; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; git add . &amp;&amp; git commit -m &quot;Исправление подключения Supabase и удаление chat.js&quot; &amp;&amp; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik; git add .; git commit -m &quot;Исправление подключения Supabase и удаление chat.js&quot;; git push" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="ping -n 1 localhost" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/index.html -Raw" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/about.html -Raw" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/games.html -Raw" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/team.html -Raw" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-Content C:/laragon/www/sitesotik/public/siteofsotik/partners.html -Raw" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git status &amp;&amp; git diff HEAD" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git status; git diff HEAD" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git push --force" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote set-url origin git@gitverse.ru:siteofsotik/sitesotik.git" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot; &amp;&amp; node -v" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; node -v" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; npm install" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; npm run dev" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik&quot;; node server.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:\laragon\www\sitesotik\backend&quot;; node server.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add C:/laragon/www/sitesotik/public/index.html" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote -v" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote set-url origin https://github.com/siteofsotik/sitesotik.git" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git commit -m &quot;Исправлены пути в loadContent и navMap для корректной работы через http://sitesotik.test&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote set-url origin https://github.com/siteofsotik/sitesotik" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="rm C:/laragon/www/sitesotik/middleware.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add C:/laragon/www/sitesotik/middleware.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git commit -m &quot;Удалён middleware.js как несовместимый с текущим окружением&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git remote set-url origin https://github.com/cotukob-code/sitesotik3w.git" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="npm install -g vercel" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="vercel --version" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Get-ExecutionPolicy" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="Set-ExecutionPolicy RemoteSigned -Scope CurrentUser" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="vercel logs https://sitesotik3w.vercel.app" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="vercel --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="vercel --prod --yes" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel deploy --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel deploy --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot; &amp;&amp; vercel logs https://sitesotik.vercel.app" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel logs https://sitesotik.vercel.app" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git diff public/index.html" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add public/index.html &amp;&amp; git commit -m &quot;Удаление чата и Discord из интерфейса хаба&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add public/index.html; git commit -m &quot;Удаление чата и Discord из интерфейса хаба&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\sitesotik&quot; &quot;C:\laragon\www\sitesotik\donate&quot; &quot;C:\laragon\www\sitesotik\auction&quot; &quot;C:\laragon\www\sitesotik\common&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\sitesotik&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate&quot;; mkdir &quot;C:\laragon\www\sitesotik\auction&quot;; mkdir &quot;C:\laragon\www\sitesotik\common&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\donate\banks&quot; &quot;C:\laragon\www\sitesotik\donate\qr&quot; &quot;C:\laragon\www\sitesotik\donate\assets&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="mkdir &quot;C:\laragon\www\sitesotik\donate\banks&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate\qr&quot;; mkdir &quot;C:\laragon\www\sitesotik\donate\assets&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add sitesotik/index.html; git status; git diff --staged" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git diff --staged sitesotik/index.html" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git commit -m &quot;Добавлена возможность ввода никнейма и фамилии в чате с форматированием отображения&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git commit -m &quot;Обновлён placeholder поля ввода имени в чате: убрано слово \&quot;Ваш\&quot; для более лаконичного отображения&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git commit -m &quot;Обновлён placeholder поля ввода имени в чате: убрано слово 'Ваш' для более лаконичного отображения&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git push origin main" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="npm run build" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="npx vercel --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git log --oneline -n 5" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add . &amp;&amp; git status" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add .; git status" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik&quot;; vercel --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git pull origin main" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik &amp;&amp; vercel --prod" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot; &amp;&amp; mkdir js &amp;&amp; curl -o js/supabase.js https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; mkdir js; curl -o js/supabase.js https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add . &amp;&amp; git commit -m &quot;Добавлен локальный supabase.js для обхода блокировки браузером&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="git add .; git commit -m &quot;Добавлен локальный supabase.js для обхода блокировки браузером&quot;" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd C:/laragon/www/sitesotik/backend &amp;&amp; npm install cors express" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/backend&quot;; npm install cors express" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/backend&quot;; node server.js" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot; &amp;&amp; vercel" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; vercel" />
-        </Execute>
-        <Execute>
-          <option name="pattern" value="cd &quot;C:/laragon/www/sitesotik/sitenewsotik/site-sotik&quot;; vercel --yes" />
-        </Execute>
+      </list>
+    </option>
+    <option name="autoApprovedReads">
+      <list>
+        <Read>
+          <option name="pattern" value="$PROJECT_DIR$/../../etc/apache2/sites-enabled/00-default.conf" />
+        </Read>
       </list>
     </option>
   </component>
