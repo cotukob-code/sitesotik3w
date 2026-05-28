@@ -1,0 +1,9 @@
+.gigaide/
+chat-server/mysql-8.4/
+*.log
+*.err
+# Дополнительные системные файлы
+.DS_Store
+Thumbs.db
+node_modules/
+.env
